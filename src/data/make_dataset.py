@@ -7,18 +7,24 @@ from torch.utils.data import random_split
 from torch.utils.data import Dataset
 from torch.utils.data import TensorDataset
 from PIL import Image
+from pathlib import Path
 
 # this globals should be in config file later
-DATASET_META = "data/raw/data.csv"
-DATASET_DIR = "data/raw/dataset"
+base_dir = Path(__file__).parent.parent.parent
 
-PROCESSED_TRAIN_DATASET = "data/processed/train_dataset.pt"
-PROCESSED_TEST_DATASET = "data/processed/test_dataset.pt"
+# define paths
+DATASET_META = base_dir / "data/data.csv"
+DATASET_DIR = base_dir / "data/raw/dataset"
 
+PROCESSED_TRAIN_DATASET = base_dir / "data/processed/train_dataset.pt"
+PROCESSED_TEST_DATASET = base_dir / "data/processed/test_dataset.pt"
+
+# define class labels
 CLASSES = ['ahegao', 'angry', 'happy', 'neutral', 'sad', 'surprise']
 LABELS = { label : i for label, i in zip(CLASSES, range(len(CLASSES))) }
 
 TRAIN_SPLIT = 0.8
+IMG_RES = (90, 90)
 
 class ImgTransformer:
     """ Custom image transformer class 
@@ -30,12 +36,12 @@ class ImgTransformer:
         pass
 
     def __call__(self, img: Image):
-        return FT.to_tensor(img.resize((90, 90), Image.BICUBIC))
+        return FT.to_tensor(img.resize(IMG_RES, Image.BICUBIC))
     
 
 class EmotionDataset(Dataset):
     """ EmotionDataset custom wrapper class """
-    def __init__(self, dir="data/raw/dataset", transformer=None):
+    def __init__(self, dir=DATASET_DIR, transformer=None):
         self.dir = dir
         self.transformer = transformer
         self.images = {}
