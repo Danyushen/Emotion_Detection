@@ -170,6 +170,7 @@ dmypy.json
 cython_debug/
 
 *.dvc
+*.csv
 *.png 
 *.jpg
 *.jpeg
