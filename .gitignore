@@ -170,9 +170,11 @@ dmypy.json
 cython_debug/
 
 *.dvc
+*.png 
+*.jpg
+*.jpeg
 *.pt
 *.zip
 *.npy
-/data
 *.ckpt
 secret
