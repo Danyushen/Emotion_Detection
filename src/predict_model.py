@@ -29,10 +29,10 @@ def main(cfg):
     predict(model, test_loader, device, log)
 
 def predict(
-        model: torch.nn.Module,
-        dataloader: torch.utils.data.DataLoader,
-        device,
-        log
+    model: torch.nn.Module,
+    dataloader: torch.utils.data.DataLoader,
+    device,
+    log
 ) -> None:
     """Run prediction for a given model and dataloader.
 

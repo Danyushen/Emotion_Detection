@@ -2,6 +2,8 @@
 import torch
 import csv
 import torchvision.transforms.functional as FT
+import albumentations as A
+import numpy as np
 
 from torch.utils.data import random_split
 from torch.utils.data import Dataset
@@ -13,7 +15,7 @@ from pathlib import Path
 base_dir = Path(__file__).parent.parent.parent
 
 # define paths
-DATASET_META = base_dir / "data/data.csv"
+DATASET_META = base_dir / "data/raw/data.csv"
 DATASET_DIR = base_dir / "data/raw/dataset"
 
 PROCESSED_TRAIN_DATASET = base_dir / "data/processed/train_dataset.pt"
@@ -24,7 +26,11 @@ CLASSES = ['ahegao', 'angry', 'happy', 'neutral', 'sad', 'surprise']
 LABELS = { label : i for label, i in zip(CLASSES, range(len(CLASSES))) }
 
 TRAIN_SPLIT = 0.8
-IMG_RES = (90, 90)
+
+
+TANSFORM_PIPELINE = A.Compose([
+    A.Resize(width=90, height=90)
+])
 
 class ImgTransformer:
     """ Custom image transformer class 
@@ -32,11 +38,15 @@ class ImgTransformer:
     Can be later integrated with Albumentation    
     
     """
-    def __init__(self):
-        pass
+    def __init__(self, pipeline):
+        self.pipeline = pipeline
 
     def __call__(self, img: Image):
-        return FT.to_tensor(img.resize(IMG_RES, Image.BICUBIC))
+        
+        img = self.pipeline(image=np.array(img))['image']
+        transformed_img = Image.fromarray(img)
+
+        return FT.to_tensor(transformed_img)
     
 
 class EmotionDataset(Dataset):
@@ -96,7 +106,7 @@ def save_tensor_dataset(dataset: Dataset, path: str):
 
 
 if __name__ == '__main__':
-    transformer = ImgTransformer()
+    transformer = ImgTransformer(pipeline=TANSFORM_PIPELINE)
     dataset = EmotionDataset(dir=DATASET_DIR, transformer=transformer)
 
     # split dataset to train, test
