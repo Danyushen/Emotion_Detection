@@ -169,9 +169,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-*.pt
+#*.pt
 *.zip
 *.npy
-/data
+#/data
 *.ckpt
 secret
