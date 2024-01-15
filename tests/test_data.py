@@ -7,23 +7,23 @@ import os
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-# tests/test_data.py
-import pytest
-from tempfile import TemporaryDirectory
+# Import DVC commands to fetch data files
+import dvc.api
 
-# this globals should be in config file later
-base_dir = Path(__file__).parent.parent
-
-base_dir = r"C:\Users\jver\Desktop\dtu\Emotion_Detection"
+# Define DVC remote and data file paths
+dvc_remote = "storage"  # Change to your DVC remote name
+train_data_path = "data/processed/train_dataset.pt"
+test_data_path = "data/processed/test_dataset.pt"
 
 def test_data_loading():
     # depending on dataset
     N_train = 12_362
-    N_test = 3_091      
-    with TemporaryDirectory() as tmp_dir:
-        train_dataset = torch.load(os.path.join(base_dir, "data/processed/train_dataset.pt"))
-        test_dataset = torch.load(os.path.join(base_dir, "data/processed/test_dataset.pt"))
+    N_test = 3_091
 
+    # Fetch data files using DVC
+    with dvc.api.open(train_data_path, remote=dvc_remote) as train_dataset, \
+         dvc.api.open(test_data_path, remote=dvc_remote) as test_dataset:
+         
         assert len(train_dataset) == N_train, "Incorrect number of samples in training set"
         assert len(test_dataset) == N_test, "Incorrect number of samples in test set"
         # Add more assertions as needed
