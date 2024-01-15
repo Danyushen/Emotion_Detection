@@ -169,7 +169,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-
+model.pt
 *.zip
 *.npy
 /data
