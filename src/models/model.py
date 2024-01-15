@@ -1,26 +1,33 @@
 import torch
+import torch.nn as nn
+import torchvision.models as models
 
-class MyNeuralNet(torch.nn.Module):
-    """ Basic neural network class. 
-    
-    Args:
-        in_features: number of input features
-        out_features: number of output features
-    
-    """
-    def __init__(self, in_features: int, out_features: int) -> None:
-        self.l1 = torch.nn.Linear(in_features, 500)
-        self.l2 = torch.nn.Linear(500, out_features)
-        self.r = torch.nn.ReLU()
-    
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Forward pass of the model.
-        
-        Args:
-            x: input tensor expected to be of shape [N,in_features]
 
-        Returns:
-            Output tensor with shape [N,out_features]
+# Define a PyTorch model using EfficientNetV2 backbone
+class EfficientNetV2Model(nn.Module):
+    def __init__(self, num_classes=6):
+        super(EfficientNetV2Model, self).__init__()
+        self.base_model = models.efficientnet_v2_m(num_classes=1000, weights='DEFAULT')
+        # Remove the classification head, leave only the backbone
+        self.base_model.classifier = nn.Identity()
+        # Freeze the weights of the backbone
+        for param in self.base_model.parameters():
+            param.requires_grad = False
 
-        """
-        return self.l2(self.r(self.l1(x)))
+        # Add custom layers for classification
+        self.flatten = nn.Flatten()
+        self.dropout = nn.Dropout(0.5)
+        self.fc = nn.Linear(1280, num_classes)  # Assuming EfficientNetV2 backbone with 1280 output channels
+
+    def forward(self, x: torch.Tensor)-> torch.Tensor:
+        x = self.base_model(x)
+        x = self.flatten(x)
+        x = self.dropout(x)
+        x = self.fc(x)
+        return x
+
+# Create an instance of the PyTorch model
+model = EfficientNetV2Model()
+
+# Print the summary
+#print(model)
