@@ -1,11 +1,15 @@
-from models.model import EfficientNetV2Model
 import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, Subset
-from pathlib import Path
 import hydra
 import time
 import logging
+import torch.nn as nn
+import pytorch_lightning as pl
+
+from pathlib import Path
+from torch.utils.data import DataLoader, Subset
+from models.model import EfficientNetV2Model
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 @hydra.main(config_path="..", config_name="config.yaml")
 def main(cfg):
@@ -62,33 +66,20 @@ def normalize(tensor):
 def train(dataset, batch_size, num_classes, lr, class_weights, num_epochs, device, base_dir, log):
     """ Train the model"""
     log.info('Begin training..')
+
     train_loader = DataLoader(dataset, batch_size=batch_size)
+    model = EfficientNetV2Model(num_classes=num_classes, lr=lr, class_weights=class_weights)
 
-    model = EfficientNetV2Model(num_classes=num_classes).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
+    # checkpoint_callback = ModelCheckpoint(dirpath="./models/checkpoints", monitor="train_loss", mode="min")
+    # early_stopping_callback = EarlyStopping(monitor="train_loss", patience=3, verbose=True, mode="min")
 
-    for epoch in range(num_epochs):
-        log.info(f'Starting epoch {epoch}/{num_epochs}')
-        model.train()
-        for batch in train_loader:
-            optimizer.zero_grad()
-            x, y = batch
-            x, y = x.to(device), y.to(device)
-            y_pred = model(x)
-            loss = loss_fn(y_pred, y)
-            loss.backward()
-            optimizer.step()
-        log.info(f"Epoch: {epoch}, Loss: {loss}")
-
-    log.info("Finished training, saving model..")
-
-    time_str = time.strftime('%Y-%m-%d_%H%M%S')
-    model_dir = f'{base_dir}/src/models/checkpoints'
-    model_file = f'model_all_data_epoch_{num_epochs}_lr_{lr}_{time_str}.pt'
-
-    torch.save(model, f'{model_dir}/{model_file}')
-    log.info(f'Model has been saved as: {model_file}')
+    trainer = pl.Trainer(
+        devices=1,
+        accelerator="cpu",
+        max_epochs=num_epochs,
+        # callbacks=[checkpoint_callback, early_stopping_callback],
+    )
+    trainer.fit(model, train_loader)
 
 if __name__ == '__main__':
     main()
