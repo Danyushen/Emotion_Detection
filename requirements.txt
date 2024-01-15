@@ -1,2 +1,17 @@
-torch >= 2.1.0
-pillow >= 10.0.1
+torch>=2.1.0
+scikit-learn
+click
+torchvision
+numpy
+matplotlib
+wandb
+pytorch_lightning
+dvc              
+dvc-gs        
+dvc-data               
+dvc-gdrive             
+dvc-http                 
+dvc-objects            
+dvc-render             
+dvc-studio-client        
+dvc-task               
