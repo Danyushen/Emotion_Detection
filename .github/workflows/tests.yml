@@ -28,18 +28,8 @@ jobs:
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
-    - name: Print debug information
-      run: |
-        pwd
-        python --version
-        pip freeze
-
-
-    - name: List test directory contents
-      run: ls -R tests/
-
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest -v tests/
+        pytest -v
 

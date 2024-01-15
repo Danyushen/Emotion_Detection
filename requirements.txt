@@ -5,6 +5,8 @@ torchvision
 numpy
 matplotlib
 wandb
+hydra-core
+pytest
 pytorch_lightning
 dvc              
 dvc-gs        
