@@ -4,7 +4,7 @@ from pathlib import Path
 import hydra
 import logging
 
-@hydra.main(config_path="..", config_name="config.yaml")
+@hydra.main(config_path="..", config_name="config.yml")
 def main(cfg):
     # Load base settings and hyperparameters from config file into variables
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
