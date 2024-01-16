@@ -40,9 +40,11 @@ jobs:
 
     - uses: iterative/setup-dvc@v1
 
-    - name: Pull data via DVC
+    - name: Pull specific data via DVC
       run: |
-        dvc pull
+        dvc pull data/processed/train_dataset.pt
+        dvc pull data/processed/test_dataset.pt
+
 
     - name: Test with pytest
       run: |
