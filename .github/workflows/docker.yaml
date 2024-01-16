@@ -23,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}/trainer_image:$GITHUB_SHA
+          tags: train-model:latest
           file: dockerfiles/train_model.dockerfile
 
 
