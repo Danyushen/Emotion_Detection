@@ -158,3 +158,5 @@ cython_debug/
 
 /data
 src/models/checkpoints/model_all_data_epoch_10_lr_0.001.pt
+/outputs
+/src/models/__pycache__
