@@ -44,6 +44,9 @@ jobs:
       run: |
         dvc pull data/processed/train_dataset.pt
         dvc pull data/processed/test_dataset.pt
+      env:
+        GDRIVE_CREDENTIALS_DATA: $
+
 
 
     - name: Test with pytest
