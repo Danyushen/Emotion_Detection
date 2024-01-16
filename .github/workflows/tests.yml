@@ -40,7 +40,7 @@ jobs:
         dvc pull data/processed/train_dataset.pt
         dvc pull data/processed/test_dataset.pt
       env:
-        GDRIVE_CREDENTIALS_DATA: ${{ secrets.YOUR_SECRET_NAME }}
+        GDRIVE_CREDENTIALS_DATA: ${{ secrets.GCP_SA_KEY  }}
 
 
 
