@@ -9,6 +9,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v2
+      - uses: iterative/setup-dvc@v1
+      - name: DVC pull
+        run: dvc pull 
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -25,6 +28,8 @@ jobs:
           push: true
           tags: train-model:latest
           file: dockerfiles/train_model.dockerfile
+        
+      
 
 
       # - name: Build the Docker image
