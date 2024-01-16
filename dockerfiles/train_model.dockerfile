@@ -8,13 +8,12 @@ RUN apt update && \
 COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY src/ src/
-#COPY data/ data/
+COPY data/ data/
 COPY config.yaml config.yaml
 
 WORKDIR /
 RUN --mount=type=cache,target=~/pip/.cache pip install -r requirements.txt --no-cache-dir
 RUN pip install -e . --no-deps --no-cache-dir
-RUN dvc pull gdrive://1xNz4768K0J6gVgYN5tELzPQaPdvXPnd7 /data/raw/dataset
 RUN src/data/make_dataset.py
 
 
