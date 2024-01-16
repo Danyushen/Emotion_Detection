@@ -147,3 +147,6 @@ outputs/*
 # structure
 data/
 models/
+
+# pytorch lightning
+lightning_logs/
