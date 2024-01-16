@@ -1,17 +1,16 @@
 import hydra
-import time
 import logging
 import torch
 import matplotlib
 import wandb
-import torch.nn as nn
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 
 
 from pathlib import Path
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.loggers.wandb import WandbLogger
 
 from models.model import EfficientNetV2Model
 
@@ -24,7 +23,7 @@ matplotlib.use("Agg")  # no UI backend
 # comment for now
 # wandb.init(project="efficientnetv2", entity="efficientnetv2")
 
-@hydra.main(config_path="..", config_name="config.yaml")
+@hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
 def main(config):
 
     torch.manual_seed(config.base_settings.seed)
@@ -49,6 +48,7 @@ def main(config):
         devices=config.trainer.devices,
         max_epochs=config.trainer.max_epochs,
         callbacks=[checkpoint_callback, early_stopping_callback],
+        # logger=WandbLogger(),
     )
 
     trainer.fit(model, train_dataloader, test_dataloader)
