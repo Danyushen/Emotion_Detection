@@ -157,3 +157,4 @@ cython_debug/
 .vscode/
 
 /data
+src/models/checkpoints/model_all_data_epoch_10_lr_0.001.pt
