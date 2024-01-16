@@ -20,6 +20,15 @@ def cli():
 @click.command()
 @click.option('--model', type=str, help='Path to model checkpoint')
 @click.option('--dataset', type=str, help='Path to dataset which will be used for prediction')
-def predict(model: torch.nn.Module, dataset: TensorDataset) -> None:
+def predict(model: str, dataset: str) -> None:
     """ Predict on test dataset """
-    return torch.cat([model(batch) for batch in DataLoader(dataset)], 0)
+
+    model, dataset = torch.load(model).to(DEVICE), torch.load(dataset)
+    loader = DataLoader(dataset, batch_size=1, shuffle=False)
+    
+    return torch.cat([model(x) for x, y in loader], 0)
+
+cli.add_command(predict)
+
+if __name__ == '__main__':
+    cli()

@@ -9,10 +9,11 @@ from torch.utils.data import DataLoader as Dataloader
 
 class EfficientNetV2Model(pl.LightningModule):
 
-    def __init__(self, num_classes=6):
+    def __init__(self, num_classes=6, lr=1e-3):
         super().__init__()
 
-        # define metrics
+        # define metrics and lr
+        self.lr = lr
         self.criterion = nn.CrossEntropyLoss()
 
         # load pretrained resolution net model from timm as a backbone
@@ -29,7 +30,7 @@ class EfficientNetV2Model(pl.LightningModule):
         return self.base_model(x)
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         return optimizer
     
     def common_step(self, batch, batch_idx):

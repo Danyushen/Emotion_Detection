@@ -33,14 +33,18 @@ def main(config):
     test_dataset = torch.load(base_dir / config.paths.test_dataset)
 
     # create dataloaders
-    train_dataloader = DataLoader(train_dataset, batch_size=config.hyperparameters.batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size=config.hyperparameters.batch_size, shuffle=False)
+    batch_size = config.hyperparameters.batch_size
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # initialize model
-    model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes)
+    model = EfficientNetV2Model(
+        num_classes=config.hyperparameters.num_classes, 
+        lr=config.hyperparameters.lr
+    )
 
     # initialize callbacks
-    checkpoint_callback = ModelCheckpoint(dirpath="./models", monitor="val_loss", mode="min")
+    checkpoint_callback = ModelCheckpoint(dirpath="./models/checkpoints", monitor="val_loss", mode="min")
     early_stopping_callback = EarlyStopping(monitor="val_loss", patience=3, verbose=True, mode="min")
 
     # initialize trainer
