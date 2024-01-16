@@ -14,7 +14,6 @@ COPY config.yaml config.yaml
 WORKDIR /
 RUN --mount=type=cache,target=~/pip/.cache pip install -r requirements.txt --no-cache-dir
 RUN pip install -e . --no-deps --no-cache-dir
-RUN apt-get update && apt-get install -y dvc
 RUN dvc clone gdrive://1xNz4768K0J6gVgYN5tELzPQaPdvXPnd7 data/raw/dataset
 RUN src/data/make_dataset.py
 
