@@ -20,7 +20,7 @@ def test_data_loading():
     # depending on dataset
     N_train = 12_362
     N_test = 3_091
-    
+
     # Create a temporary directory to store the downloaded data
     with tempfile.TemporaryDirectory() as tmp_dir:
         # Fetch data files using DVC and save them to the temporary directory
@@ -39,4 +39,3 @@ def test_data_loading():
         # Perform assertions on the loaded datasets
         assert len(loaded_train_dataset) == N_train, "Incorrect number of samples in training set"
         assert len(loaded_test_dataset) == N_test, "Incorrect number of samples in test set"
-

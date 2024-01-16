@@ -14,7 +14,7 @@ from tempfile import TemporaryDirectory
 def test_data_loading():
     # depending on dataset
     N_train = 12_362
-    N_test = 3_091      
+    N_test = 3_091
     with TemporaryDirectory() as tmp_dir:
         train_dataset = torch.load(os.path.join(project_root, "data/processed/train_dataset.pt"))
         test_dataset = torch.load(os.path.join(project_root, "data/processed/test_dataset.pt"))

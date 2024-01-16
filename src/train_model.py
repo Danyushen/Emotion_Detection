@@ -30,14 +30,14 @@ def get_class_weights(dataset):
 
     # Normalize the weights
     class_weights /= class_weights.sum()
-    
+
     return class_weights
 
 def random_subset(dataset, subset_size):
     """ Create a random subset of the dataset"""
     indices = torch.randperm(len(dataset))[:subset_size]
     subset = Subset(dataset, indices)
-    
+
     return subset
 
 def normalize(tensor):
