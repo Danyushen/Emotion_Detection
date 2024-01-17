@@ -1,6 +1,5 @@
 import timm
 import torch
-
 import torch.nn as nn
 import pytorch_lightning as pl
 
@@ -82,4 +81,3 @@ if __name__ == '__main__':
     y_hat = model(x)
     print(y_hat)
     print(y_hat.shape)
-

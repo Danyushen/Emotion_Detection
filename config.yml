@@ -1,0 +1,13 @@
+paths:
+  train_dataset: "data/processed/train_dataset.pt"
+  test_dataset: "data/processed/test_dataset.pt"
+  model_checkpoint: "src/models/checkpoints/model.pt"
+
+base_settings:
+  seed: 42
+
+hyperparameters:
+  num_classes: 6
+  learning_rate: 0.0001
+  batch_size: 64
+  num_epochs: 5
