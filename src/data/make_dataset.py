@@ -15,7 +15,7 @@ from pathlib import Path
 base_dir = Path(__file__).parent.parent.parent
 
 # define paths
-DATASET_META = base_dir / "data/data.csv"
+DATASET_META = base_dir / "data/raw/data.csv"
 DATASET_DIR = base_dir / "data/raw/dataset"
 
 PROCESSED_TRAIN_DATASET = base_dir / "data/processed/train_dataset.pt"
@@ -33,21 +33,15 @@ TANSFORM_PIPELINE = A.Compose([
 ])
 
 class ImgTransformer:
-    """ Custom image transformer class
-
-    Can be later integrated with Albumentation
-
-    """
+    """ Custom image transformer class """
     def __init__(self, pipeline):
         self.pipeline = pipeline
 
     def __call__(self, img: Image):
-
         img = self.pipeline(image=np.array(img))['image']
         transformed_img = Image.fromarray(img)
 
         return FT.to_tensor(transformed_img)
-
 
 class EmotionDataset(Dataset):
     """ EmotionDataset custom wrapper class """
@@ -91,9 +85,8 @@ def get_split_ratio(n_data, split=0.8):
 
 def save_tensor_dataset(dataset: Dataset, path: str):
     """ Save given dataset as TensorDataset by given file path """
-    # Ensure the parent directory exists
-    path.parent.mkdir(parents=True, exist_ok=True)
 
+    path.parent.mkdir(parents=True, exist_ok=True)
     data, labels = [], []
 
     for i in range(len(dataset)):

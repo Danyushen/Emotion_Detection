@@ -1,73 +1,61 @@
-from models.model import EfficientNetV2Model
+import hydra
+import logging
 import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, Subset
-from pathlib import Path
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+import matplotlib
+import wandb
+import matplotlib.pyplot as plt
+import pytorch_lightning as pl
 
-# this globals should be in config file later
+
+from pathlib import Path
+from torch.utils.data import DataLoader
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.loggers.wandb import WandbLogger
+
+from models.model import EfficientNetV2Model
+
+log = logging.getLogger(__name__)
 base_dir = Path(__file__).parent.parent
 
-# Define hyperparameters
-num_classes = 6
-lr = 0.0001
-batch_size = 64
-seed = 42
-torch.manual_seed(seed)
-#subset_size = 3000
-num_epochs = 5
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+matplotlib.use("Agg")  # no UI backend
 
-# Load the processed dataset
-train_dataset = torch.load( base_dir /"data/processed/train_dataset.pt")
+# comment for now
+# wandb.init(project="efficientnetv2", entity="efficientnetv2")
 
-def get_class_weights(dataset):
-    """ Calculate class weights based on label distribution in the dataset"""
-    class_counts = torch.zeros(num_classes)
-    for _, label in dataset:
-        class_counts[label] += 1
+@hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
+def main(config):
 
-    class_weights = 1 / class_counts
+    torch.manual_seed(config.base_settings.seed)
 
-    # Normalize the weights
-    class_weights /= class_weights.sum()
+    # load data
+    train_dataset = torch.load(base_dir / config.paths.train_dataset)
+    test_dataset = torch.load(base_dir / config.paths.test_dataset)
 
-    return class_weights
+    # create dataloaders
+    batch_size = config.hyperparameters.batch_size
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-def random_subset(dataset, subset_size):
-    """ Create a random subset of the dataset"""
-    indices = torch.randperm(len(dataset))[:subset_size]
-    subset = Subset(dataset, indices)
+    # initialize model
+    model = EfficientNetV2Model(
+        num_classes=config.hyperparameters.num_classes, 
+        lr=config.hyperparameters.lr
+    )
 
-    return subset
+    # initialize callbacks
+    checkpoint_callback = ModelCheckpoint(dirpath="./models/checkpoints", monitor="val_loss", mode="min")
+    early_stopping_callback = EarlyStopping(monitor="val_loss", patience=3, verbose=True, mode="min")
 
-def normalize(tensor):
-    """ Normalize a tensor"""
-    return (tensor - tensor.mean()) / tensor.std()
+    # initialize trainer
+    trainer = pl.Trainer(
+        devices=config.trainer.devices,
+        max_epochs=config.trainer.max_epochs,
+        callbacks=[checkpoint_callback, early_stopping_callback],
+        # logger=WandbLogger(),
+    )
 
-def train(dataset, batch_size, num_classes, lr, class_weights, num_epochs):
-    """ Train the model"""
-    train_loader = DataLoader(dataset, batch_size=batch_size)
-
-    model = EfficientNetV2Model(num_classes=num_classes).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
-
-    for epoch in range(num_epochs):
-        model.train()
-        for batch in train_loader:
-            optimizer.zero_grad()
-            x, y = batch
-            x, y = x.to(device), y.to(device)
-            y_pred = model(x)
-            loss = loss_fn(y_pred, y)
-            loss.backward()
-            optimizer.step()
-        print(f"Epoch {epoch} Loss {loss}")
-
-    torch.save(model, f"model_all_data_epoch_{num_epochs}_lr_{lr}.pt")
+    trainer.fit(model, train_dataloader, test_dataloader)
 
 if __name__ == '__main__':
-    class_weights = get_class_weights(train_dataset)
-    print(class_weights)
-    #train_subset = random_subset(train_dataset, subset_size)
-    train(train_dataset, batch_size, num_classes, lr, class_weights, num_epochs)
+    main()

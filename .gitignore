@@ -17,6 +17,7 @@ manual_test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/*
 *.py[cod]
 *$py.class
 
@@ -169,6 +170,22 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# IDE
+.idea/
+.vscode/
+
+# hydra
+outputs/
+outputs/*
+
+# structure
+data/
+models/
+
+# pytorch lightning
+lightning_logs/
+
+# Specific file extions
 *.csv
 *.png
 *.jpg
@@ -178,3 +195,4 @@ cython_debug/
 *.npy
 *.ckpt
 secret
+.config.local

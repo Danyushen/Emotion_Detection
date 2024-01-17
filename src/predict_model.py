@@ -1,68 +1,34 @@
 import torch
-from torch.utils.data import DataLoader
-from pathlib import Path
 import hydra
 import logging
+import click
+import pytorch_lightning as pl
 
-@hydra.main(config_path="..", config_name="config.yml")
-def main(cfg):
-    # Load base settings and hyperparameters from config file into variables
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    base_dir = Path(__file__).parent.parent
-    test_dataset_dir = cfg.paths.test_dataset
-    model_checkpoint_dir = cfg.paths.model_checkpoint
+from pathlib import Path
+from torch.utils.data import DataLoader
+from torch.utils.data import TensorDataset
 
-    batch_size = cfg.hyperparameters.batch_size
+log = logging.getLogger(__name__)
+base_dir = Path(__file__).parent.parent
 
-    # Create Logger
-    log = logging.getLogger(__name__)
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Load model checkpoint
-    model = torch.load(base_dir / model_checkpoint_dir)
-    log.info(f'Model checkpoint loaded: {model_checkpoint_dir}')
+@click.group()
+def cli():
+    pass
 
-    # Load test set
-    test_dataset = torch.load(base_dir / test_dataset_dir)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+@click.command()
+@click.option('--model', type=str, help='Path to model checkpoint')
+@click.option('--dataset', type=str, help='Path to dataset which will be used for prediction')
+def predict(model: str, dataset: str) -> None:
+    """ Predict on test dataset """
 
-    # Run prediction
-    predict(model, test_loader, device, log)
+    model, dataset = torch.load(model).to(DEVICE), torch.load(dataset)
+    loader = DataLoader(dataset, batch_size=1, shuffle=False)
+    
+    return torch.cat([model(x) for x, y in loader], 0)
 
-def predict(
-    model: torch.nn.Module,
-    dataloader: torch.utils.data.DataLoader,
-    device,
-    log
-) -> None:
-    """Run prediction for a given model and dataloader.
-
-    Args:
-        model: model to use for prediction
-        dataloader: dataloader with batches
-
-    Returns
-        Tensor of shape [N, d] where N is the number of samples and d is the output dimension of the model
-
-    """
-    model = model.eval()
-    with torch.no_grad():
-        total_correct = 0
-        total_samples = 0
-        for x, y in dataloader:
-            x, y = x.to(device), y.to(device)
-            y_pred = model(x)
-            _, predicted = torch.max(y_pred, 1)
-            total_samples += y.size(0)
-            total_correct += (predicted == y).sum().item()
-            # print(f"predicted: {predicted} actual: {y}")
-        accuracy = total_correct / total_samples
-
-        log.info(f"Validation Accuracy: {accuracy * 100:.2f}%")
-
-    predictions = torch.cat([model(x) for x, _ in dataloader], 0)
-    log.info(f'Number of predictions: {predictions.shape[0]}, Number of labels: {predictions.shape[1]}')
-
-    return predictions
+cli.add_command(predict)
 
 if __name__ == '__main__':
-    main()
+    cli()
