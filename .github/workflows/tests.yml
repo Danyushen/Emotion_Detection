@@ -39,9 +39,10 @@ jobs:
         run: |
           gcloud auth configure-docker
 
-      - name: Install dvc using pip
+      - name: Install DVC-GS for Google Cloud Storage support
         run: |
           pip install dvc
+          pip install dvc-gs
 
       - name: Set up Google Cloud SDK and authenticate
         uses: google-github-actions/auth@v2
