@@ -6,10 +6,15 @@ paths:
 base_settings:
   seed: 42
 
+trainer:
+  devices: 1
+  accelerator: "cpu"
+  max_epochs: 5
+
 hyperparameters:
   num_classes: 6
   learning_rate: 0.001
   batch_size: 64
-  num_epochs: 5
 
-
+wandb:
+  project: "emotion_detection"
