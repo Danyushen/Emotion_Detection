@@ -1,8 +1,6 @@
 #
 steps:
     - name: 'gcr.io/cloud-builders/docker'
-      args: ['build', '-t', 'gcr.io/peaceful-basis-411414/train-model:latest', '.']
-      with:
-        file: dockerfiles/train_model.dockerfile
+      args: ['build', '-t', 'gcr.io/peaceful-basis-411414/train-model:latest', '--file', './dockerfiles/train_model.dockerfile', '.']
     - name: 'gcr.io/cloud-builders/docker'
       args: ['push', 'gcr.io/peaceful-basis-411414/train-model:latest'] 
