@@ -1,5 +1,5 @@
 [core]
-    remote = main
-['remote "storage"']
+    remote = remote_storage
+['remote "remote_storage"']
     url = gs://data_tensors/
     version_aware = true
