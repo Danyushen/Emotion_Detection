@@ -156,3 +156,4 @@ wandb/
 *.ckpt
 secret
 .config.local
+*pt:Zone.Identifier
