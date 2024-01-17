@@ -12,9 +12,8 @@ COPY data/ data/
 COPY config.yaml config.yaml
 
 WORKDIR /
-RUN pip install -r requirements.txt --no-cache-dir
+RUN --mount=type=cache,target=~/pip/.cache pip install -r requirements.txt --no-cache-dir
 RUN pip install -e . --no-deps --no-cache-dir
-#RUN python -u src/data/make_dataset.py
 
 
 ENTRYPOINT ["python", "-u", "src/train_model.py"]
