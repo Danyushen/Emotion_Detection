@@ -1,61 +1,46 @@
-name: "Run tests"
-
-on:
-  push:
-    branches: [ master, main ]
-  pull_request:
-    branches: [ master, main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.10"
-
-    - name: Get pip cache dir
-      id: pip-cache
-      run: |
-        echo "::set-output name=dir::$(pip cache dir)"
-
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ${{ steps.pip-cache.outputs.dir }}
-        key: ubuntu-latest-py3.10-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ubuntu-latest-py3.10-pip-
-
-
-    - uses: iterative/setup-dvc@v1
-
-    - name: Pull specific data via DVC
-      run: |
-        dvc pull data/processed/train_dataset.pt
-        dvc pull data/processed/test_dataset.pt
-      env:
-        GDRIVE_CREDENTIALS_DATA: ${{ secrets.GCP_SA_KEY  }}
-
-
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements_tests.txt
-
-
-
-
-
-
-    - name: Test with pytest
-      run: |
-        pip install pytest
-        pytest -v
+outs:
+- hash: md5
+  path: processed
+  files:
+  - relpath: .gitignore
+    md5: d27706ecaecd0663304a360c3c5dec41
+    size: 35
+    cloud:
+      remote_storage:
+        etag: 08ff869fa7bae483031001
+        version_id: '1705495625188223'
+  - relpath: .gitkeep.txt
+    md5: d41d8cd98f00b204e9800998ecf8427e
+    size: 0
+    cloud:
+      remote_storage:
+        etag: 08fdd29ea7bae483031001
+        version_id: '1705495625181565'
+  - relpath: test_dataset.pt
+    md5: e2e0e287ceccd4044765c7f2cae2afe0
+    size: 300471414
+    cloud:
+      remote_storage:
+        etag: 08a2d1a5cebae483031001
+        version_id: '1705495707084962'
+  - relpath: test_dataset.pt:Zone.Identifier
+    md5: 96429b69c9ed6465b5800741d35221d2
+    size: 277
+    cloud:
+      remote_storage:
+        etag: 08f5f88da7bae483031001
+        version_id: '1705495624907893'
+  - relpath: train_dataset.pt
+    md5: a0b24ce5db942b48256ba3bce12a8d86
+    size: 1201686780
+    cloud:
+      remote_storage:
+        etag: 0884c9b6e0bae483031001
+        version_id: '1705495745111172'
+  - relpath: train_dataset.pt:Zone.Identifier
+    md5: f64f5fbe36446594ce2daa37f9c7ec86
+    size: 277
+    cloud:
+      remote_storage:
+        etag: 08c38099a7bae483031001
+        version_id: '1705495625089091'
