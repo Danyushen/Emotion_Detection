@@ -6,7 +6,6 @@ import wandb
 import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 
-
 from pathlib import Path
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -36,8 +35,8 @@ def main(config):
         'architecture': 'EfficientNetV2',
         'epochs': config.trainer.max_epochs,
         'seed': config.base_settings.seed,
-    }
-)
+        }
+    )
 
     # load data
     train_dataset = torch.load(base_dir / config.paths.train_dataset)

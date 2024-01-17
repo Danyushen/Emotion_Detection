@@ -18,5 +18,3 @@ hyperparameters:
 
 wandb:
   project: "emotion_detection"
-
-

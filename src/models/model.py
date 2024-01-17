@@ -8,7 +8,6 @@ from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader as Dataloader
 
 class EfficientNetV2Model(pl.LightningModule):
-
     def __init__(self, num_classes=6, lr=1e-3):
         super().__init__()
 
@@ -82,4 +81,3 @@ if __name__ == '__main__':
     y_hat = model(x)
     print(y_hat)
     print(y_hat.shape)
-

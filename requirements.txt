@@ -1,15 +1,23 @@
-torch >= 2.1.0
-pillow >= 10.0.1
-albumentations >= 1.3.1
-torchvision >= 0.16.2
-timm >= 0.9.12
-
-hydra-core
-dvc >= 3.38.1
-dvc-gdrive >= 3.0.1
-
-
+torch
+scikit-learn
+click
+torchvision
 numpy
 matplotlib
 wandb
-click
+hydra-core
+pytest
+pytorch_lightning
+dvc
+dvc-gs
+dvc-data
+dvc-gdrive
+dvc-http
+dvc-objects
+dvc-render
+dvc-studio-client
+dvc-task
+albumentations
+pillow
+timm
+matplotlib
