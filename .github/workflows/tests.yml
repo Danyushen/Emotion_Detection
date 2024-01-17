@@ -3,11 +3,11 @@ name: "Run tests"
 on:
   push:
     branches:
-      - master
+      - remote_storage
       - main
   pull_request:
     branches:
-      - master
+      - remote_storage
       - main
 
 jobs:
