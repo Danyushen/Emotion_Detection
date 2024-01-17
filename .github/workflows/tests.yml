@@ -3,11 +3,11 @@ name: "Run tests"
 on:
   push:
     branches:
-      - master
+      - remote_storage
       - main
   pull_request:
     branches:
-      - master
+      - remote_storage
       - main
 
 jobs:
@@ -29,35 +29,42 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ubuntu-latest-py3.10-pip-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: ubuntu-latest-py3.10-pip-
 
-      - name: Upgrade setup-gcloud action
-        run: |
-          gcloud auth configure-docker
-
-      - name: Install dvc using pip
-        run: |
-          pip install dvc
-
-      - name: Set up Google Cloud SDK and authenticate
-        uses: google-github-actions/auth@v0
+      - uses: 'google-github-actions/auth@v2'
         with:
-          credentials: ${{ secrets.GCP_SA_KEY }}
+          #project_id: ${{ secrets.GC_PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Pull data from GCS via DVC
-        run: |
-          dvc pull data/processed/train_dataset.pt
-          dvc pull data/processed/test_dataset.pt
+      # - name: Upgrade setup-gcloud action
+      #   run: |
+      #     gcloud auth configure-docker
+
+      # - name: Install DVC-GS for Google Cloud Storage support
+      #   run: |
+      #     pip install dvc
+      #     pip install dvc-gs
+      #     pip install -U dvc dvc[gs]
+
+      # - name: Install DVC and Pull Data  # Updated name
+      #   run: |
+      #     pip install -U dvc dvc[gs]
+      #     git init
+      #     dvc pull
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements_tests.txt
+
+      - name: Pull data from GCS via DVC
+        run: |
+          dvc pull
 
       - name: Test with pytest
         run: |

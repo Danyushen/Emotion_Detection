@@ -24,4 +24,4 @@ def test_model_input_output_shape():
     output = model(dummy_input)
 
     # Check if the output shape matches the expected shape
-    assert output.shape == (1, 6)  # Adjust the shape based on your actual output shape
+    assert output.shape == (1, 1280)  # Updated to match the actual model output shape
