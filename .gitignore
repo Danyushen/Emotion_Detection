@@ -1,5 +1,23 @@
+docs/site/
+
+# test cache
+manual_test/
+
+# other local dev info
+.vscode/
+
+# Mac OS-specific storage files
+.DS_Store
+
+# vim
+*.swp
+*.swo
+
+## https://github.com/github/gitignore/blob/4488915eec0b3a45b5c63ead28f286819c0917de/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/*
 *.py[cod]
 *$py.class
 
@@ -156,7 +174,25 @@ cython_debug/
 .idea/
 .vscode/
 
-/data
-src/models/checkpoints/model_all_data_epoch_10_lr_0.001.pt
-/outputs
-/src/models/__pycache__
+# hydra
+outputs/
+outputs/*
+
+# structure
+data/
+models/
+
+# pytorch lightning
+lightning_logs/
+
+# Specific file extions
+*.csv
+*.png
+*.jpg
+*.jpeg
+*.pt
+*.zip
+*.npy
+*.ckpt
+secret
+.config.local
