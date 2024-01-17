@@ -20,13 +20,24 @@ base_dir = Path(__file__).parent.parent
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
 
-# comment for now
-# wandb.init(project="efficientnetv2", entity="efficientnetv2")
 
 @hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
 def main(config):
 
     torch.manual_seed(config.base_settings.seed)
+
+    # initialize wandb
+    wandb.init(
+    project=config.wandb.project,, 
+
+    config={
+        'learning_rate': config.hyperparameters.learning_rate,
+        'batch_size': config.hyperparameters.batch_size,
+        'architecture': 'EfficientNetV2',
+        'epochs': config.trainer.max_epochs,
+        'seed': config.base_settings.seed,
+    }
+)
 
     # load data
     train_dataset = torch.load(base_dir / config.paths.train_dataset)
@@ -40,7 +51,7 @@ def main(config):
     # initialize model
     model = EfficientNetV2Model(
         num_classes=config.hyperparameters.num_classes, 
-        lr=config.hyperparameters.lr
+        lr=config.hyperparameters.learning_rate
     )
 
     # initialize callbacks
@@ -52,10 +63,12 @@ def main(config):
         devices=config.trainer.devices,
         max_epochs=config.trainer.max_epochs,
         callbacks=[checkpoint_callback, early_stopping_callback],
-        # logger=WandbLogger(),
+        logger=WandbLogger(),
     )
 
     trainer.fit(model, train_dataloader, test_dataloader)
+
+    wandb.finish()
 
 if __name__ == '__main__':
     main()
