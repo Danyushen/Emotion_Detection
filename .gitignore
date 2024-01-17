@@ -138,6 +138,7 @@ outputs/*
 
 # structure
 data/raw
+data/raw\dataset
 models/
 
 # pytorch lightning
@@ -147,6 +148,7 @@ lightning_logs/
 wandb/
 
 # Specific file extions
+*.bmp
 *.csv
 *.png
 *.jpg
