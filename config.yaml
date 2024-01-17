@@ -18,3 +18,8 @@ hyperparameters:
 
 wandb:
   project: "emotion_detection"
+
+web:
+  port: 8000
+  host: "0.0.0.0"
+  
