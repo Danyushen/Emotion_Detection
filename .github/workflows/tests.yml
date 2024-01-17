@@ -44,11 +44,11 @@ jobs:
           pip install dvc
           pip install dvc-gs
 
-      - name: Install DVC and Pull Data  # Updated name
-        run: |
-          pip install -U dvc dvc[gs]
-          git init
-          dvc pull
+      # - name: Install DVC and Pull Data  # Updated name
+      #   run: |
+      #     pip install -U dvc dvc[gs]
+      #     git init
+      #     dvc pull
 
       - name: Set up Google Cloud SDK and authenticate
         uses: google-github-actions/auth@v2
