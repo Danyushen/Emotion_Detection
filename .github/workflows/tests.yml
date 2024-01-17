@@ -35,12 +35,15 @@ jobs:
           key: ubuntu-latest-py3.10-pip-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: ubuntu-latest-py3.10-pip-
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+      - name: Upgrade setup-gcloud action
+        run: |
+          gcloud auth configure-docker
+          gcloud components install dvc
+
+      - name: Set up Google Cloud SDK and authenticate
+        uses: google-github-actions/auth@v0
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials: ${{ secrets.GCP_SA_KEY }}
 
       - name: Pull data from GCS via DVC
         run: |
