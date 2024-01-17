@@ -10,3 +10,10 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/predict_model.dockerfile
+  web:
+    image: web:latest
+    build:
+      context: .
+      dockerfile: dockerfiles/web.dockerfile
+    ports:
+      - "8000:8000"
