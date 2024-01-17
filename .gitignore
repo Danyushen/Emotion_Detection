@@ -162,7 +162,7 @@ outputs/
 outputs/*
 
 # structure
-data/
+data/raw
 models/
 
 # pytorch lightning
@@ -176,7 +176,6 @@ wandb/
 *.png
 *.jpg
 *.jpeg
-*.pt
 *.zip
 *.npy
 *.ckpt
