@@ -1,15 +1,13 @@
+import torch
 import sys
+
 from pathlib import Path
+from src.models.model import EfficientNetV2Model
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-import pytest
-import torch
-import os
-
-from src.models.model import EfficientNetV2Model
 
 def test_model_input_output_shape():
     """

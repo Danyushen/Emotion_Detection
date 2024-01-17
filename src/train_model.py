@@ -3,7 +3,6 @@ import logging
 import torch
 import matplotlib
 import wandb
-import matplotlib.pyplot as plt
 import pytorch_lightning as pl
 
 from pathlib import Path
@@ -22,20 +21,18 @@ matplotlib.use("Agg")  # no UI backend
 
 @hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
 def main(config):
-
     torch.manual_seed(config.base_settings.seed)
 
     # initialize wandb
     wandb.init(
-    project=config.wandb.project,, 
-
-    config={
-        'learning_rate': config.hyperparameters.learning_rate,
-        'batch_size': config.hyperparameters.batch_size,
-        'architecture': 'EfficientNetV2',
-        'epochs': config.trainer.max_epochs,
-        'seed': config.base_settings.seed,
-        }
+        project=config.wandb.project,
+        config={
+            "learning_rate": config.hyperparameters.learning_rate,
+            "batch_size": config.hyperparameters.batch_size,
+            "architecture": "EfficientNetV2",
+            "epochs": config.trainer.max_epochs,
+            "seed": config.base_settings.seed,
+        },
     )
 
     # load data
@@ -48,10 +45,7 @@ def main(config):
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # initialize model
-    model = EfficientNetV2Model(
-        num_classes=config.hyperparameters.num_classes, 
-        lr=config.hyperparameters.learning_rate
-    )
+    model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes, lr=config.hyperparameters.learning_rate)
 
     # initialize callbacks
     checkpoint_callback = ModelCheckpoint(dirpath="./models/checkpoints", monitor="val_loss", mode="min")
@@ -69,5 +63,6 @@ def main(config):
 
     wandb.finish()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
