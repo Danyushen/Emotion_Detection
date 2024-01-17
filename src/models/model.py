@@ -1,5 +1,6 @@
 import timm
 import torch
+
 import torch.nn as nn
 import pytorch_lightning as pl
 
@@ -7,7 +8,6 @@ from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader as Dataloader
 
 class EfficientNetV2Model(pl.LightningModule):
-
     def __init__(self, num_classes=6, lr=1e-3):
         super().__init__()
 
