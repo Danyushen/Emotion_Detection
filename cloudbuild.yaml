@@ -1,5 +1,5 @@
 steps:
     - name: 'gcr.io/cloud-builders/docker'
-        args: ['build', '-t', 'gcr.io/peaceful-basis-411414/train-model:latest', '.']
+        args: ['build', '-t', 'gcr.io/peaceful-basis-411414/train-model:latest', 'src']
     - name: 'gcr.io/cloud-builders/docker'
-        args: ['push', 'gcr.io/peaceful-basis-411414/train-model:latest']
+        args: ['push', 'gcr.io/peaceful-basis-411414/train-model:latest'] 
