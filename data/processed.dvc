@@ -1,0 +1,4 @@
+outs:
+- hash: md5
+  path: processed
+  files: []
