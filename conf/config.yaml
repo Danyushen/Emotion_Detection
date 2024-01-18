@@ -1,4 +1,4 @@
 defaults:
-  - model: default-model
-  - trainer: trainer-cpu
+  - model: default_model
+  - trainer: trainer_cpu
   - web: fastapi
