@@ -21,3 +21,6 @@ pillow
 timm
 matplotlib
 pytest-mock
+fastapi
+uvicorn
+google-api-python-client
