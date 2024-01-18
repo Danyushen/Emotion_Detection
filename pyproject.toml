@@ -28,4 +28,3 @@ line-length = 120
 
 [tool.pytest.ini_options]
 addopts = "--rootdir=${PYTEST_ROOT_DIR}"
-
