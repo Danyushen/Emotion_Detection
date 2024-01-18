@@ -22,10 +22,6 @@ from pathlib import Path
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-#print(os.getcwd())
-
-#hej = torch.zeros(10, 10)
-#torch.save(hej, "hej.pt")
 
 from src.models.model import EfficientNetV2Model
 #from models.model import EfficientNetV2Model
@@ -37,11 +33,8 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
 
 
-@hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
+@hydra.main(config_path="conf", config_name="config.yaml", version_base="1.3.2")
 def main(config):
-    print(os.getcwd())
-    hej2 = torch.zeros(10, 10)
-    torch.save(hej2, "hej2.pt") 
 
     torch.manual_seed(config.base_settings.seed)
 
