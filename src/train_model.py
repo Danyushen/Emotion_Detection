@@ -19,33 +19,38 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
 
 
-@hydra.main(config_path="..", config_name="config.yaml", version_base="1.3.2")
+@hydra.main(config_path="../conf", config_name="config.yaml", version_base="1.3.2")
 def main(config):
-    torch.manual_seed(config.base_settings.seed)
+    trainer_conf, model_conf = (
+        config.trainer.trainer_cpu,
+        config.model.default_model
+    )
+
+    torch.manual_seed(model_conf.seed)
 
     # initialize wandb
     wandb.init(
-        project=config.wandb.project,
+        project=model_conf.wandb_project,
         config={
-            "learning_rate": config.hyperparameters.learning_rate,
-            "batch_size": config.hyperparameters.batch_size,
+            "learning_rate": model_conf.learning_rate,
+            "batch_size": model_conf.batch_size,
             "architecture": "EfficientNetV2",
-            "epochs": config.trainer.max_epochs,
-            "seed": config.base_settings.seed,
+            "epochs": trainer_conf.max_epochs,
+            "seed": model_conf.seed,
         },
     )
 
     # load data
-    train_dataset = torch.load(base_dir / config.paths.train_dataset)
-    test_dataset = torch.load(base_dir / config.paths.test_dataset)
+    train_dataset = torch.load(base_dir / model_conf.paths.train_dataset)
+    test_dataset = torch.load(base_dir / model_conf.paths.test_dataset)
 
     # create dataloaders
-    batch_size = config.hyperparameters.batch_size
+    batch_size = model_conf.batch_size
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # initialize model
-    model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes, lr=config.hyperparameters.learning_rate)
+    model = EfficientNetV2Model(num_classes=model_conf.num_classes, lr=model_conf.learning_rate)
 
     # initialize callbacks
     checkpoint_callback = ModelCheckpoint(dirpath="./models/checkpoints", monitor="val_loss", mode="min")
@@ -53,8 +58,8 @@ def main(config):
 
     # initialize trainer
     trainer = pl.Trainer(
-        devices=config.trainer.devices,
-        max_epochs=config.trainer.max_epochs,
+        devices=trainer_conf.devices,
+        max_epochs=trainer_conf.max_epochs,
         callbacks=[checkpoint_callback, early_stopping_callback],
         logger=WandbLogger(),
     )

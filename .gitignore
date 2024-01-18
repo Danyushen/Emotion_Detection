@@ -139,7 +139,7 @@ outputs/*
 # structure
 data/raw
 data/raw\dataset
-models/
+models/checkpoints
 
 # pytorch lightning
 lightning_logs/

@@ -45,12 +45,17 @@ async def predict_post(data: UploadFile):
     return {"image tensor shape": tensor.shape}
 
 
-@hydra.main(config_path="../..", config_name="config", version_base="1.3.2")
+@hydra.main(config_path="../../conf", config_name="config.yaml", version_base="1.3.2")
 def run(config):
-    global checkpoint
-    checkpoint = config.paths.model_checkpoint
+    web_conf, model_conf = (
+        config.web.fastapi,
+        config.model.default_model
+    )
 
-    uvicorn.run(app, host=config.web.host, port=config.web.port)
+    global checkpoint
+    checkpoint = model_conf.paths.model_checkpoint
+
+    uvicorn.run(app, host=web_conf.host, port=web_conf.port)
 
 
 if __name__ == "__main__":

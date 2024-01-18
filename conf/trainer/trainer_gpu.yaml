@@ -1,0 +1,5 @@
+trainer_gpu:
+  driver: "trainer_gpu"
+  devices: 1
+  accelerator: "gpu"
+  max_epochs: 5
