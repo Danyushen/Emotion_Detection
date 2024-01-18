@@ -61,10 +61,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements_tests.txt
+          pip install pytest-mock 
 
       - name: Pull data from GCS via DVC
         run: |
           dvc pull
+          gsutil cp gs://data_tensors/model.pt ./
 
       - name: Test with pytest
         run: |
