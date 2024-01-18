@@ -32,7 +32,6 @@ base_dir = Path(__file__).parent.parent
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
 
-print(os.getcwd())
 @hydra.main(config_path="../conf", config_name="config.yaml", version_base="1.3.2")
 def main(config):
 
@@ -50,20 +49,30 @@ def main(config):
         },
     )
 
-    # load data
-    train_dataset = torch.load('/gcs/data_tensors/data/processed/train_dataset.pt')
-    test_dataset = torch.load('/gcs/data_tensors/data/processed/train_dataset.pt')
+    # Check for an environment variable to determine the environment
+    if os.environ.get('RUNNING_IN_CLOUD'):
+        data_path = '/gcs/data_tensors/data/processed/'
+    else:
+        data_path = 'data/processed/'
 
+    train_dataset_path = os.path.join(data_path, 'train_dataset.pt')
+    test_dataset_path = os.path.join(data_path, 'test_dataset.pt')
 
     # create dataloaders
     batch_size = config.hyperparameters.batch_size
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_dataloader = DataLoader(train_dataset_path, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(train_dataset_path, batch_size=batch_size, shuffle=False)
 
     # initialize model
     model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes, lr=config.hyperparameters.learning_rate)
+    
     # initialize callbacks
-    checkpoint_callback = ModelCheckpoint(dirpath="src/models/checkpoints", monitor="val_loss", mode="min")
+    if os.environ.get('RUNNING_IN_CLOUD'):
+        checkpoint_dir = "gs://data_tensors"
+    else:
+        checkpoint_dir = os.getcwd()
+
+    checkpoint_callback = ModelCheckpoint(dirpath=checkpoint_dir, monitor="val_loss", mode="min")
     early_stopping_callback = EarlyStopping(monitor="val_loss", patience=3, verbose=True, mode="min")
 
     # initialize trainer
