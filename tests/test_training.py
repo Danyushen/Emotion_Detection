@@ -1,25 +1,38 @@
 import sys
 from pathlib import Path
-
-# tests/test_training.py
 import pytest
-# Import your training function or script here
+from torch.utils.data import TensorDataset, DataLoader
+import torch
+import omegaconf
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
+from src.train_model import main as train_main
+from omegaconf import OmegaConf
 
-def test_training_runs():
+def test_train_initialization(mocker):
     """
-    Test if the training process runs without errors.
+    Test the initialization of the training components.
     """
-    # Setup for the test (if required)
-    # ...
+    # Mock Wandb and internal function calls
+    mocker.patch('src.train_model.wandb.init')
+    mocker.patch('pytorch_lightning.Trainer')  # Mock PyTorch Lightning Trainer
 
-    # Call your training function or script
-    try:
-        # train_your_model(...)
-        pass  # Replace with actual training function call
-    except Exception as e:
-        pytest.fail(f"Training failed with an exception: {e}")
+    # Mocking model and DataLoader with more realistic behavior
+    mocker.patch('src.train_model.EfficientNetV2Model')  # Mock your model
+    mock_dataset = TensorDataset(torch.randn(10, 3, 224, 224), torch.randn(10))  # Mock dataset with 10 samples
+    mocker.patch('torch.load', return_value=mock_dataset)  # Mock torch.load to return the mock dataset
+
+
+    # Create a mock configuration using OmegaConf
+    mock_config = OmegaConf.create({
+        'base_settings': {'seed': 42},
+        'wandb': {'project': 'test_project'},
+        'hyperparameters': {'learning_rate': 0.001, 'batch_size': 32, 'num_classes': 10},
+        'paths': {'train_dataset': 'data/processed/train_dataset.pt', 'test_dataset': 'data/processed/test_dataset.pt'},
+        'trainer': {'devices': 1, 'max_epochs': 1},
+    })
+
+    train_main(mock_config)  # Test initialization with the mock configuration

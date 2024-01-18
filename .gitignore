@@ -139,7 +139,6 @@ outputs/*
 # structure
 data/raw
 data/raw\dataset
-models/checkpoints
 
 # pytorch lightning
 lightning_logs/
@@ -148,8 +147,10 @@ lightning_logs/
 wandb/
 
 # Specific file extions
-*.bmp
+*.bm
+*.pt
 *.csv
+*.png
 *.jpg
 *.jpeg
 *.zip
@@ -158,3 +159,4 @@ wandb/
 secret
 .config.local
 *pt:Zone.Identifier
+m
