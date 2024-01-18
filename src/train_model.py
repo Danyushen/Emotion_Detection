@@ -2,9 +2,16 @@ import hydra
 import logging
 import torch
 import matplotlib
-import wandb
-import pytorch_lightning as pl
 import os
+import wandb
+
+# Set the API key
+os.environ["WANDB_API_KEY"] = "3a8227d16fffba40e5a4f21fbe96329c602fac69"
+
+# Now initialize wandb
+wandb.init(project="emotion_detection")
+
+import pytorch_lightning as pl
 
 from torch.utils.data import DataLoader
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
