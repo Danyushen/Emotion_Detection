@@ -24,6 +24,9 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
      
       - uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          #project_id: ${{ secrets.GC_PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}      
 
       - name: 'submit build'
         run: 'gcloud builds submit --config=.github/workflows/cloudbuild.yaml'
