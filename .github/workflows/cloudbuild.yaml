@@ -12,4 +12,5 @@ steps:
     - name: 'gcr.io/cloud-builders/docker'
       args: ['push', 'us-central1-docker.pkg.dev/peaceful-basis-411414/artifact-repo/predict-model:latest'] 
 
-logging: CLOUD_LOGGING_ONLY
+options:
+  logging: CLOUD_LOGGING_ONLY
