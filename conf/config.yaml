@@ -1,4 +1,24 @@
-defaults:
-  - model: default_model
-  - trainer: trainer_cpu
-  - web: fastapi
+# Combined Configuration
+paths:
+  train_dataset: "data/processed/train_dataset.pt"
+  test_dataset: "data/processed/test_dataset.pt"
+  model_checkpoint: "model.pt"
+
+base_settings:
+  seed: 42
+
+trainer:
+  devices: 1
+  accelerator: "cpu"
+  max_epochs: 5
+
+hyperparameters:
+  num_classes: 6
+  learning_rate: 0.001
+  batch_size: 64
+
+wandb:
+  project: "emotion_detection"
+
+model: default_model
+web: fastapi
