@@ -4,16 +4,11 @@ from torch.utils.data import DataLoader, TensorDataset
 import sys
 from pathlib import Path
 # Add the project root to the Python path
-print(sys.path)
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-print(sys.path)
 
 from src.models.model import EfficientNetV2Model
 
-# Function to correct the module path
-def custom_map_location(storage, loc):
-    return storage
 
 def test_model_prediction():
     # instantiate your model
@@ -52,13 +47,9 @@ def test_model_with_varied_input_sizes():
 
 def test_model_with_real_data():
     # load model
-    def map_location(storage, loc):
-        if hasattr(storage, '_set_from_file'):
-            return storage
-        return custom_map_location(storage, loc)
-    
-    model_path = 'model.pt'
-    model =  torch.load(model_path, map_location=map_location)
+    model_path = 'epoch=1-step=388.ckpt'
+    model = EfficientNetV2Model() 
+    model = EfficientNetV2Model.load_from_checkpoint(model_path)
     model.eval()
 
     # load the test dataset
@@ -76,28 +67,4 @@ def test_model_with_real_data():
         assert predictions is not None, "Model did not return predictions."
         assert isinstance(predictions, torch.Tensor), "Predictions should be a torch.Tensor."
 
-        break  # break after one batch to reduce test duration
-
-# import torch
-# from src.models.model import EfficientNetV2Model
-# from torch.utils.data import DataLoader
-
-# def test_model_with_real_data():
-#     model_path = 'path/to/model_state_dict.pt'  # Update the path as needed
-
-#     # Create a new model instance
-#     model = EfficientNetV2Model(num_classes=6)  # Assuming 6 classes
-#     model.load_state_dict(torch.load(model_path))
-#     model.eval()
-
-#     # Load your test dataset
-#     test_dataset = torch.load('path/to/test_dataset.pt')
-#     testloader = DataLoader(test_dataset, batch_size=16, shuffle=False)
-
-#     # Perform a prediction on test data
-#     with torch.no_grad():
-#         for images, labels in testloader:
-#             predictions = model(images)
-#             assert predictions is not None, "Model did not return predictions."
-#             assert isinstance(predictions, torch.Tensor), "Predictions should be a torch.Tensor."
-#             break  # Example: stop after one batch
+        break  

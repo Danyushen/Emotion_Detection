@@ -10,6 +10,7 @@ from torch.utils.data import Dataset
 from torch.utils.data import TensorDataset
 from PIL import Image
 from pathlib import Path
+import subprocess
 
 # this globals should be in config file later
 base_dir = Path(__file__).parent.parent.parent
@@ -100,14 +101,31 @@ def save_tensor_dataset(dataset: Dataset, path: str):
         torch.cat(labels, dim=0)
         ), path)
 
+def pull_data_from_dvc():
+    """ Pull data from DVC remote if it doesn't exist locally """
+    if not DATASET_META.exists() or not DATASET_DIR.exists():
+        # Run DVC pull command
+        subprocess.run(["dvc", "pull", str(DATASET_META), str(DATASET_DIR)], check=True)
+
+def save_and_add_to_dvc(dataset: Dataset, path: Path):
+    """ Save given dataset as TensorDataset and add to DVC """
+    save_tensor_dataset(dataset, path)
+    
+    # Add to DVC and push to remote
+    subprocess.run(["dvc", "add", str(path)], check=True)
+    subprocess.run(["dvc", "push"], check=True)
 
 if __name__ == '__main__':
+
+    # Pull data from DVC if not available locally
+    pull_data_from_dvc()
+
     transformer = ImgTransformer(pipeline=TANSFORM_PIPELINE)
     dataset = EmotionDataset(dir=DATASET_DIR, transformer=transformer)
 
     # split dataset to train, test
     train_set, test_test = random_split(dataset, get_split_ratio(len(dataset), TRAIN_SPLIT))
 
-    # save both datasets into processed folder
-    save_tensor_dataset(train_set, PROCESSED_TRAIN_DATASET)
-    save_tensor_dataset(test_test, PROCESSED_TEST_DATASET)
+    # Save both datasets into processed folder and add to DVC
+    save_and_add_to_dvc(train_set, PROCESSED_TRAIN_DATASET)
+    save_and_add_to_dvc(test_test, PROCESSED_TEST_DATASET)
