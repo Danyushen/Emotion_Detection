@@ -69,7 +69,11 @@ jobs:
         run: |
           dvc pull
           gsutil cp gs://data_tensors/model.pt ./
-      
+
+      - name: Download Latest Model Checkpoint from GCS
+        run: |
+          gsutil cp $(gsutil ls gs://data_tensors/*.ckpt | sort | tail -1) ./model.ckpt
+    
       - name: Test with pytest
         run: |
           pip install pytest
