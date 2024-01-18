@@ -26,4 +26,4 @@ jobs:
       - uses: 'google-github-actions/setup-gcloud@v0'
 
       - name: 'submit build'
-        run: 'gcloud build submit .github/workflows/cloudbuild.yaml'
+        run: 'gcloud builds submit .github/workflows/cloudbuild.yaml'
