@@ -58,8 +58,9 @@ def main(config):
     )
 
     # load data
-    train_dataset = torch.load(base_dir / config.paths.train_dataset)
-    test_dataset = torch.load(base_dir / config.paths.test_dataset)
+    train_dataset = torch.load('/gcs/data_tensors/data/processed/train_dataset.pt')
+    test_dataset = torch.load('/gcs/data_tensors/data/processed/train_dataset.pt')
+
 
     # create dataloaders
     batch_size = config.hyperparameters.batch_size
