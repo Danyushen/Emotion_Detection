@@ -1,12 +1,15 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-from src.models.model import EfficientNetV2Model
 
 import sys
 from pathlib import Path
 # Add the project root to the Python path
+print(sys.path)
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
+print(sys.path)
+
+from src.models.model import EfficientNetV2Model
 
 def test_model_prediction():
     # instantiate your model
@@ -46,7 +49,7 @@ def test_model_with_varied_input_sizes():
 def test_model_with_real_data():
     # load model
     model_path = 'model.pt'
-    model = torch.load(model_path, map_location={'models.model.EfficientNetV2Model': 'src.models.model.EfficientNetV2Model'})
+    model = torch.load(model_path)
     model.eval()
 
     # load the test dataset

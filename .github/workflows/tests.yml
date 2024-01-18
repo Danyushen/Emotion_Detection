@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PYTEST_ROOT_DIR: ${{ github.workspace }} 
 
     steps:
       - name: Checkout
@@ -67,8 +69,9 @@ jobs:
         run: |
           dvc pull
           gsutil cp gs://data_tensors/model.pt ./
-
+      
       - name: Test with pytest
         run: |
           pip install pytest
           pytest -v
+          
