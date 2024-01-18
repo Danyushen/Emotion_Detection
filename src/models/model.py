@@ -20,7 +20,7 @@ class EfficientNetV2Model(pl.LightningModule):
         num_features = self.base_model.classifier.in_features
         
         # modify the last layer to fit the number of classes
-        self.base_model.classifier = nn.Linear(num_features, num_features)
+        self.base_model.classifier = nn.Linear(num_features, num_classes)
 
     def forward(self, x: torch.Tensor)-> torch.Tensor:
         if x.ndim != 4:

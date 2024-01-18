@@ -5,13 +5,12 @@ torchvision
 numpy
 matplotlib
 wandb
+coverage
 hydra-core
 pytest
 pytorch_lightning
 dvc
-dvc-gs
 dvc-data
-dvc-gdrive
 dvc-http
 dvc-objects
 dvc-render
@@ -21,3 +20,4 @@ albumentations
 pillow
 timm
 matplotlib
+pytest-mock
