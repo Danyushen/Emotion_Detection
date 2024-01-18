@@ -30,7 +30,4 @@ jobs:
 
       - name: 'submit build'
         run: 'gcloud builds submit --config=.github/workflows/cloudbuild.yaml'
-
-        
-
         
