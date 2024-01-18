@@ -77,3 +77,27 @@ def test_model_with_real_data():
         assert isinstance(predictions, torch.Tensor), "Predictions should be a torch.Tensor."
 
         break  # break after one batch to reduce test duration
+
+# import torch
+# from src.models.model import EfficientNetV2Model
+# from torch.utils.data import DataLoader
+
+# def test_model_with_real_data():
+#     model_path = 'path/to/model_state_dict.pt'  # Update the path as needed
+
+#     # Create a new model instance
+#     model = EfficientNetV2Model(num_classes=6)  # Assuming 6 classes
+#     model.load_state_dict(torch.load(model_path))
+#     model.eval()
+
+#     # Load your test dataset
+#     test_dataset = torch.load('path/to/test_dataset.pt')
+#     testloader = DataLoader(test_dataset, batch_size=16, shuffle=False)
+
+#     # Perform a prediction on test data
+#     with torch.no_grad():
+#         for images, labels in testloader:
+#             predictions = model(images)
+#             assert predictions is not None, "Model did not return predictions."
+#             assert isinstance(predictions, torch.Tensor), "Predictions should be a torch.Tensor."
+#             break  # Example: stop after one batch
