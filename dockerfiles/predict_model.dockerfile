@@ -9,7 +9,7 @@ COPY requirements.txt requirements.txt
 COPY pyproject.toml pyproject.toml
 COPY src/ src/
 COPY data/ data/
-COPY config.yaml config.yaml
+COPY conf/config.yaml conf/config.yaml
 
 WORKDIR /
 #RUN --mount=type=cache,target=~/pip/.cache pip install -r requirements.txt --no-cache-dir
