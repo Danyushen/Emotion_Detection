@@ -22,3 +22,4 @@ torch==2.1.2
 torchvision==0.16.2
 uvicorn==0.26.0
 wandb==0.16.2
+coverage
