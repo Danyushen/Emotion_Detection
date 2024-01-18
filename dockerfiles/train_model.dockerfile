@@ -16,5 +16,4 @@ WORKDIR /
 RUN pip install -r requirements.txt --no-cache-dir
 RUN pip install -e . --no-deps --no-cache-dir
 
-
 ENTRYPOINT ["python", "-u", "src/train_model.py"]
