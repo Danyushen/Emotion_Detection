@@ -1,0 +1,29 @@
+name: "Submit build"
+
+on:
+  push:
+    branches:
+      - remote_storage
+      - main
+  pull_request:
+    branches:
+      - remote_storage
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          #project_id: ${{ secrets.GC_PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+     
+      - uses: 'google-github-actions/setup-gcloud@master'
+
+      - name: 'submit build'
+        run: 'gcloud build submit .github/workflows/cloudbuild.yaml'
