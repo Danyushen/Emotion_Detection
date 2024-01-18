@@ -150,7 +150,6 @@ wandb/
 # Specific file extions
 *.bmp
 *.csv
-*.png
 *.jpg
 *.jpeg
 *.zip
