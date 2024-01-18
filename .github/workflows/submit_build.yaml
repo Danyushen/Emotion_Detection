@@ -23,7 +23,7 @@ jobs:
           #project_id: ${{ secrets.GC_PROJECT_ID }}
           credentials_json: ${{ secrets.GCP_SA_KEY }}
      
-      - uses: 'google-github-actions/setup-gcloud@master'
+      - uses: 'google-github-actions/setup-gcloud@v0'
 
       - name: 'submit build'
         run: 'gcloud build submit .github/workflows/cloudbuild.yaml'
