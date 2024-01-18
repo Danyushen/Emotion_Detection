@@ -1,0 +1,25 @@
+paths:
+  train_dataset: "data/processed/train_dataset.pt"
+  test_dataset: "data/processed/test_dataset.pt"
+  model_checkpoint: "src/models/checkpoints/model_all_data_epoch_10_lr_0.001.pt"
+
+base_settings:
+  seed: 42
+
+trainer:
+  devices: 1
+  accelerator: "cpu"
+  max_epochs: 5
+
+hyperparameters:
+  num_classes: 6
+  learning_rate: 0.001
+  batch_size: 64
+
+wandb:
+  project: "emotion_detection"
+
+web:
+  port: 8000
+  host: "0.0.0.0"
+  
