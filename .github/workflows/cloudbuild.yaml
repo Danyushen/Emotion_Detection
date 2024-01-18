@@ -14,7 +14,6 @@ on:
     #    branches: [ main ]
 
 jobs:
-  build:
   steps:
       - name: 'gcr.io/cloud-builders/docker'
         args: ['build', '-t', 'us-central1-docker.pkg.dev/peaceful-basis-411414/artifact-repo/train-model:latest', '--file', './dockerfiles/train_model.dockerfile', '.']
