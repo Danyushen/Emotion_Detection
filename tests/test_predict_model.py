@@ -47,9 +47,13 @@ def test_model_with_varied_input_sizes():
 
 def test_model_with_real_data():
     # load model
-    model_path = 'epoch=1-step=388.ckpt'
+    model_path = 'model.ckpt'
+
+    # load model from the checkpoint
     model = EfficientNetV2Model() 
     model = EfficientNetV2Model.load_from_checkpoint(model_path)
+
+    # model evaluation setup
     model.eval()
 
     # load the test dataset
