@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: train-model:latest
+          tags: emotion-detection:latest
           file: dockerfiles/train_model.dockerfile
         
       
