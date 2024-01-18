@@ -49,19 +49,20 @@ def main(config):
         },
     )
 
-    # Check for an environment variable to determine the environment
+        # Check environment and set data paths
     if os.environ.get('RUNNING_IN_CLOUD'):
         data_path = '/gcs/data_tensors/data/processed/'
     else:
         data_path = 'data/processed/'
 
-    train_dataset_path = os.path.join(data_path, 'train_dataset.pt')
-    test_dataset_path = os.path.join(data_path, 'test_dataset.pt')
+    # Load datasets
+    train_dataset = torch.load(os.path.join(data_path, 'train_dataset.pt'))
+    test_dataset = torch.load(os.path.join(data_path, 'test_dataset.pt'))
 
-    # create dataloaders
+    # Create dataloaders
     batch_size = config.hyperparameters.batch_size
-    train_dataloader = DataLoader(train_dataset_path, batch_size=batch_size, shuffle=True)
-    test_dataloader = DataLoader(train_dataset_path, batch_size=batch_size, shuffle=False)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # initialize model
     model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes, lr=config.hyperparameters.learning_rate)
@@ -84,6 +85,10 @@ def main(config):
     )
 
     trainer.fit(model, train_dataloader, test_dataloader)
+
+    # Manually save the model's state dictionary
+    model_path = os.path.join(checkpoint_dir, 'model.pt')
+    torch.save(model.state_dict(), model_path)
 
     wandb.finish()
 

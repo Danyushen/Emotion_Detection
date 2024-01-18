@@ -11,6 +11,10 @@ print(sys.path)
 
 from src.models.model import EfficientNetV2Model
 
+# Function to correct the module path
+def custom_map_location(storage, loc):
+    return storage
+
 def test_model_prediction():
     # instantiate your model
     model = EfficientNetV2Model()
@@ -48,8 +52,13 @@ def test_model_with_varied_input_sizes():
 
 def test_model_with_real_data():
     # load model
+    def map_location(storage, loc):
+        if hasattr(storage, '_set_from_file'):
+            return storage
+        return custom_map_location(storage, loc)
+    
     model_path = 'model.pt'
-    model = torch.load(model_path)
+    model =  torch.load(model_path, map_location=map_location)
     model.eval()
 
     # load the test dataset
