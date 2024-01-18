@@ -6,8 +6,11 @@ import albumentations as A
 from PIL import Image
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import RedirectResponse
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
-from src.data.make_dataset import ImgTransformer
+from data.make_dataset import ImgTransformer
 
 app = FastAPI()
 
@@ -42,7 +45,7 @@ async def predict_post(data: UploadFile):
 
     # preds = model(tensor)
 
-    return {"image tensor shape": tensor.shape}
+    return {"Image tensor shape from POST request": tensor.shape}
 
 
 @hydra.main(config_path="../../conf", config_name="config.yaml", version_base="1.3.2")
