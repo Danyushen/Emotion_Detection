@@ -32,8 +32,8 @@ base_dir = Path(__file__).parent.parent
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
 
-
-@hydra.main(config_path="conf", config_name="config.yaml", version_base="1.3.2")
+print(os.getcwd())
+@hydra.main(config_path="../conf", config_name="config.yaml", version_base="1.3.2")
 def main(config):
 
     torch.manual_seed(config.base_settings.seed)
@@ -62,7 +62,6 @@ def main(config):
 
     # initialize model
     model = EfficientNetV2Model(num_classes=config.hyperparameters.num_classes, lr=config.hyperparameters.learning_rate)
-
     # initialize callbacks
     checkpoint_callback = ModelCheckpoint(dirpath="src/models/checkpoints", monitor="val_loss", mode="min")
     early_stopping_callback = EarlyStopping(monitor="val_loss", patience=3, verbose=True, mode="min")
