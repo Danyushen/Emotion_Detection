@@ -7,16 +7,18 @@ from PIL import Image
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import RedirectResponse
 import sys
+import os
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
+project_root = Path(__file__).parent.parent.parent
+sys.path.append(str(project_root))
 
-from data.make_dataset import ImgTransformer
+from src.data.make_dataset import ImgTransformer
+from src.models.model import EfficientNetV2Model
 
 app = FastAPI()
 
-model_path = "models/checkpoints/model_all_data_epoch_5_lr_0.0001.pt"
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+model_path = f"{project_root}/src/models/checkpoints/model.ckpt"
+model = EfficientNetV2Model.load_from_checkpoint(model_path)
 
 # redirect on root
 @app.get("/")
@@ -33,32 +35,35 @@ async def predict_get():
 async def predict_post(data: UploadFile):
     # load uploaded image using PIL
     image = Image.open(data.file)
-
-    # transform image
     transformer = ImgTransformer(pipeline=A.Compose([A.Resize(width=90, height=90)]))
-
-    # convert image to tensor and add batch dimension [1, 3, 90, 90]
     tensor = transformer(image).unsqueeze(0)
 
-    # model = EfficientNetV2Model()
-    # model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+    label_to_emotion = {'0': 'Ahegao', '1': 'Angry', '2': 'Happy', '3': 'Neutral', '4': 'Sad', '5': 'Surprise'}
 
-    # preds = model(tensor)
+    model.eval()
+    logits = model(tensor)
+    pred_prob = torch.nn.functional.softmax(logits)
+    prediction = torch.argmax(pred_prob)
+    prediction = prediction.item()
+    prediction_label = str(prediction)
+    prediction_class = label_to_emotion[prediction_label]
 
-    return {"Image tensor shape from POST request": tensor.shape}
+    return {"Image shape": tensor.shape, "Predicted label": {prediction_label}, "Predicted class": {prediction_class}}
 
 
-@hydra.main(config_path="../../conf", config_name="config.yaml", version_base="1.3.2")
-def run(config):
+#@hydra.main(config_path="../../conf", config_name="config.yaml", version_base="1.3.2")
+def run():
+    """
     web_conf, model_conf = (
         config.web.fastapi,
         config.model.default_model
     )
 
-    global checkpoint
-    checkpoint = model_conf.paths.model_checkpoint
+    global model
+    model = model_conf.paths.model_checkpoint
+    """
 
-    uvicorn.run(app, host=web_conf.host, port=web_conf.port)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 if __name__ == "__main__":
