@@ -1,14 +1,18 @@
-import uvicorn
 import torch
+import uvicorn
 import hydra
 import albumentations as A
-
+import json
 from PIL import Image
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import RedirectResponse
 import sys
 import os
+import subprocess
+import re
+from datetime import datetime
 from pathlib import Path
+from google.cloud import storage
 project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
@@ -17,8 +21,33 @@ from src.models.model import EfficientNetV2Model
 
 app = FastAPI()
 
-model_path = f"{project_root}/src/models/checkpoints/model.ckpt"
-model = EfficientNetV2Model.load_from_checkpoint(model_path)
+def download_latest_model(bucket_name, prefix):
+    # initialize the GCS client
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+
+    # list all blobs in the specified gcloud
+    blobs = list(bucket.list_blobs(prefix=prefix))
+
+    # filter for .ckpt files and sort by creation time
+    ckpt_files = [blob for blob in blobs if blob.name.endswith('.ckpt')]
+    latest_blob = max(ckpt_files, key=lambda b: b.time_created)
+    print(latest_blob)
+    if latest_blob:
+        model_path = Path('latest_model.ckpt')
+        latest_blob.download_to_filename(model_path)
+        return model_path
+    else:
+        raise Exception("No .ckpt files found in the specified bucket and prefix")
+
+# bucket name and prefix
+bucket_name = 'data_tensors'
+prefix = '' 
+
+# download the latest model
+latest_model_path = download_latest_model(bucket_name, prefix)
+model = EfficientNetV2Model.load_from_checkpoint(latest_model_path)
+
 
 # redirect on root
 @app.get("/")
