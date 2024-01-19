@@ -67,8 +67,8 @@ jobs:
 
       - name: Pull data from GCS via DVC
         run: |
-          dvc pull
-          gsutil cp gs://data_tensors/model.pt ./
+          dvc pull data/processed/train_dataset.pt
+          dvc pull data/processed/test_dataset.pt
 
       - name: Download Latest Model Checkpoint from GCS
         run: |
