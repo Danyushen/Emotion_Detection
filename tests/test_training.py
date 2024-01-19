@@ -3,14 +3,14 @@ from pathlib import Path
 import pytest
 from torch.utils.data import TensorDataset, DataLoader
 import torch
-import omegaconf
+from omegaconf import OmegaConf
+from unittest.mock import patch
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from src.train_model import main as train_main
-from omegaconf import OmegaConf
 
 def test_train_initialization(mocker):
     """

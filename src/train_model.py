@@ -16,6 +16,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers.wandb import WandbLogger
 from src.models.model import EfficientNetV2Model
 
+
 # Set the API key
 os.environ["WANDB_API_KEY"] = "3a8227d16fffba40e5a4f21fbe96329c602fac69"
 
@@ -41,20 +42,6 @@ base_dir = Path(__file__).parent.parent
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 matplotlib.use("Agg")  # no UI backend
-
-def save_model_to_gcs(model, bucket_name, destination_blob_name):
-    """Saves the model to Google Cloud Storage."""
-    # Initialize Google Cloud Storage client
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-
-    # Save model locally
-    local_model_path = 'temp_model.pt'
-    torch.save(model.state_dict(), local_model_path)
-
-    # Upload the local model to GCS
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(local_model_path)
 
 @hydra.main(config_path="../conf", config_name="config.yaml", version_base="1.3.2")
 def main(config):
@@ -104,13 +91,6 @@ def main(config):
     )
 
     trainer.fit(model, train_dataloader, test_dataloader)
-
-    # save the model's state dictionary
-    if os.getenv('RUNNING_IN_CLOUD'):
-        save_model_to_gcs(model, "data_tensors", "model.pt")
-    else:
-        model_path = os.path.join(checkpoint_dir, 'model.pt')
-        torch.save(model.state_dict(), model_path)
 
     wandb.finish()
 

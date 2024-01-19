@@ -1,5 +1,7 @@
 [core]
-    remote = remote_storage
+    remote = myremote
 ['remote "remote_storage"']
     url = gs://data_tensors/
     version_aware = true
+['remote "myremote"']
+    url = gs://data_tensors
