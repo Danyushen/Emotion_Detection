@@ -159,7 +159,9 @@ end of the project.
 > The project leverages the TIMM, third-party framework, chosen for its extensive range of models, including pretrained ones. In our implementation, TIMM plays a central role in both constructing the model and incorporating pretrained features, forming the backbone of our architecture. 
 > Additionally, PyTorch Lightning proves instrumental in simplifying the model-building and training processes, eliminating the need for standard PyTorch boilerplate code. It serves a dual purpose by defining the architecture during model construction and facilitating training settings, such as specifying the number of GPUs, choosing the accelerator (CPU, GPU, or TPU), determining the maximum number of epochs for training, and initializing the training. The integration of Wandblogger enhances the project's logging capabilities.
 >
-> Hydra is used to streamline the handling of parameters for training, prediction and web API. It establishes a connection with a config file containing relevant hyperparameters, offering a centralized and efficient means of controlling hyperparameters. For data preparation, we use Albumentations, an image transformations library. Within a custom transformer class, we've established an easily expandable pipeline. Currently, it resizes images to a constant resolution, but it can be easily expanded with functions provided by Albumentations. This approach ensures flexibility in adapting the transformation process as needed.
+> Hydra is used to streamline the handling of parameters for training, prediction and web API. It establishes a connection with a config file containing relevant hyperparameters, offering a centralized and efficient means of controlling hyperparameters.
+>
+> For data preparation, we use Albumentations, an image transformations library. Within a custom transformer class, we've established an easily expandable pipeline. Currently, it resizes images to a constant resolution, but it can be easily expanded with functions provided by Albumentations. This approach ensures flexibility in adapting the transformation process as needed.
 
 
 ## Coding environment
@@ -208,9 +210,9 @@ end of the project.
 
 > Answer:
 >
-> The project structure closely aligns with the cookiecutter template, while systematically excluding unneeded folders, these folders are deliberately removed, thereby avoiding having redundant and empty directories. This customization of the project structures ensures that it has precisely those folders needed. This means that specific folders namely ‘models’, ‘notebooks’, and ‘src/visualizations’, have been intentionally removed from the project structure. 
-> Instead of the excluded folders, the Hydra framework has created a new folder named ‘outputs’. This folder, organized by date and time for each run, serves as a repository for relevant information for each run. For instance, each subfolder within ‘outputs’ contains relevant information like the config-file used for that specific run. 
-> To prevent GIT to be drowned in numerous folders that may not be of interest to all, the ‘outputs’ folder has been added to the .gitignore file. This ensures that information specific to individual runs is saved locally, thereby preventing GIT to be burdened with unneeded data. *
+> The project structure closely aligns with the cookiecutter template, while systematically excluding unneeded folders, these folders are deliberately removed, thereby avoiding having redundant and empty directories. This customization of the project structures ensures that it has precisely those folders needed. This means that specific folders namely ‘models’, ‘notebooks’, and ‘src/visualizations’, have been intentionally removed from the project structure.  
+> Instead of the excluded folders, the Hydra framework has created a new folder named ‘outputs’. This folder, organized by date and time for each run, serves as a repository for relevant information for each run. For instance, each subfolder within ‘outputs’ contains relevant information like the config-file used for that specific run.
+> To prevent GIT to be drowned in numerous folders that may not be of interest to all, the ‘outputs’ folder has been added to the .gitignore file. This ensures that information specific to individual runs is saved locally, thereby preventing GIT to be burdened with unneeded data.
 
 
 ### Question 6
@@ -291,7 +293,7 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 >
 > Our project workflow was designed for flexibility, accommodating diverse team preferences through the utilization of branches and forks. Team members had the option to work in individual branches within the project repository, alongside the main branch. Alternatively, some opted for forks of the project repository. To integrate code into the main branch, we implemented pull requests, subject to thorough reviews by other team members.
 >
-> Ensuring synchronization and continuity, each team member continuously pulled from the main branch of the project repository to update their individual branches or forked repositories. This practice aimed to prevent deprecated code and resolve potential merge conflicts promptly. The combination of individual branches, forks, and pull requests facilitated a collaborative and organized development process, allowing team members to work in parallel while maintaining a structured and cohesive codebase. This approach not only accommodated varying working styles within the team but also contributed to a smooth and well-coordinated project development lifecycle.*
+> Ensuring synchronization and continuity, each team member continuously pulled from the main branch of the project repository to update their individual branches or forked repositories. This practice aimed to prevent deprecated code and resolve potential merge conflicts promptly. The combination of individual branches, forks, and pull requests facilitated a collaborative and organized development process, allowing team members to work in parallel while maintaining a structured and cohesive codebase. This approach not only accommodated varying working styles within the team but also contributed to a smooth and well-coordinated project development lifecycle.
 
 
 
@@ -311,6 +313,7 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 > Answer:
 >
 > Data Version Control (DVC) is used in the project as much as an integrated part like git is used, making version control clear and reliable. The project makes use of this in combination with first google drive, but later scaled up to use bucket through google cloud instead. For setting up the project to be able to make use of DVC, a dedicated folder and a config-file is needed. For the folder it needs to be named like the following: ‘.dvc’, where the config-file is located, which contains information about type of storage, in this case remote-storage, but more importantly where the storage is located. Additionally, a connection between git and google needs to be established using SECRETS, so they have the possibility to exchange data. Having the setup in order and ready to use, the user is then able to run ‘dvc push’ ‘dvc add’ and ‘dvc pull’ commands to either push new data to the storage or to update the data locally.
+>
 > In the initial step of the project, the DVC ensured that each team member works with the same data. Later in the project, when the project is moved to the cloud, the DVC ensures that the docker runs on the correct data while also having the trained model version controlled. Using DVC made it possible for the project to work on the correct data throughout the development, while later in the process also include the trained model.
 
 
@@ -356,7 +359,7 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 >
 > Answer:
 >
-> We used Hydra to manage and load our hyperparameters from a configuration file config.yaml. The hyperparameters specified in the config file are automatically loaded into the train_model.py and predict_model.py scripts, hence by simply running: python train_model.py. Any hyperparameter can be changed for a specific run from the command-line in the following way: python train_model.py hyperparameters.num_epochs=10. 
+> We used Hydra to manage and load our hyperparameters from a configuration file config.yaml. The hyperparameters specified in the config file are automatically loaded into the train_model.py and predict_model.py scripts, hence by simply running: python train_model.py. Any hyperparameter can be changed for a specific run from the command-line in the following way: python train_model.py hyperparameters.num_epochs=10.  
 > Then we even expanded its functionality with hydra folder config, creating config files for model, trainer and web interface. For example, now we can just run python train_model.py –multirun trainer=trainer_cpu, trainer_gpu to test both cpu and gpu training using pytorch-lightning trainer configuration. The project is now easily expandable with new configurations just by adding a new config file to the proper folder and setting it to default if preferred.
 
 
@@ -376,7 +379,7 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 >
 > Ensuring the reproducibility of our experiments was integral to our methodology, accomplished through the use of configuration files managed by Hydra. When initiating an experiment, the hyperparameters from the specified config file, e.g. "config.yaml," were automatically incorporated into the model's training and prediction processes. These parameters could be dynamically modified from the command line, as detailed in the preceding question. With each run, Hydra not only saved the exact config file but also logged the printed output, preserving comprehensive information for future reference.
 >
->This approach guarantees that no crucial details are overlooked, enhancing the reproducibility of previous experiments. Replicating an experiment is a straightforward process; one simply reruns the code, specifying the config file from a prior experiment: python train_model.py -cd path/to/config --config-name=config_experiment. This systematic utilization of config files and Hydra not only enhances the clarity and traceability of experiments but also streamlines the replication process, contributing to the reliability and transparency of our experimental outcomes.
+> This approach guarantees that no crucial details are overlooked, enhancing the reproducibility of previous experiments. Replicating an experiment is a straightforward process; one simply reruns the code, specifying the config file from a prior experiment: python train_model.py -cd path/to/config --config-name=config_experiment. This systematic utilization of config files and Hydra not only enhances the clarity and traceability of experiments but also streamlines the replication process, contributing to the reliability and transparency of our experimental outcomes.
 
 
 
@@ -421,10 +424,9 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 >
 > Answer:
 >
->In our experimentation, we established Docker images for diverse purposes, namely predict_model, train_model and web. This segmentation allowed us to encapsulate specific functionalities within each container, promoting modularity, flexibility and reproducibility.
+> In our experimentation, we established Docker images for diverse purposes, namely predict_model, train_model and web. This segmentation allowed us to encapsulate specific functionalities within each container, promoting modularity, flexibility and reproducibility.
 >
 > For example, to initiate our experiment, we can run the command: docker compose run --build. This command reads configurations from our docker-compose.yaml file, orchestrating the simultaneous launch of multiple Docker containers. This composition enables the seamless interaction of the "predict_model," "train_model," and "web" containers, streamlining the execution of our entire system.
->
 > This approach simplifies deployment and scalability while maintaining a consistent environment across different stages of our project, contributing to a cohesive and efficient development workflow.
 >
 > Link to a docker file: [GCD docker image](https://console.cloud.google.com/artifacts/docker/peaceful-basis-411414/us-central1/artifact-repo/train-model/sha256:09133f871bd01adea230622f0f9f551135c33d273d8b2e4af097ec11c380a60b?project=peaceful-basis-411414)
@@ -468,16 +470,14 @@ In larger projects, adhering to coding practices becomes crucial for consistency
 > Answer:
 >
 > The project makes use of multiple services from Google Cloud Platform (GCP), Google Cloud Build together with Google Artifact Registry, Google Bucket, Service Accounts, and Cloud Functions. 
-For using these services/tools that Google Cloud offers, a Cloud project is created which allows to have the services/tools used under one project and thereby making it simpler to for example go from PR in git to build an docker image and run the training. 
+For using these services/tools that Google Cloud offers, a Cloud project is created which allows to have the services/tools used under one project and thereby making it simpler to for example go from PR in git to build an docker image and run the training.
 > In the project, Google Cloud Build is used for building a docker image for training the model, this is done through a file ‘cloudbuild.yaml’, that is linked to the docker file ‘train_model.dockerfile’. The setup to trigger this step in the pipelines, comes from ‘git workflow’. The workflow is part of the CI pipeline and makes use of the file ‘submit_build.yaml’ to submit ‘cloudbuild.yaml’ to cloud, where Google Cloud Build then builds an docker image for training, triggered on both push and pull requests to the remote_storage and main branches.
-> The same is true for building an image for prediction, where it follows the same steps. 
-When the images are built, they are located in GCP ‘Artifact Registry’, where they can be managed. Because it’s fully integrated with Google Clouds tooling and runtimes, this makes it possible to automate pipelines through Google Cloud. 
->
-> Google Bucket is used for storing both the raw and processed data together with the trained model also being saved to the bucket. 
+> The same is true for building an image for prediction, where it follows the same steps. When the images are built, they are located in GCP ‘Artifact Registry’, where they can be managed. Because it’s fully integrated with Google Clouds tooling and runtimes, this makes it possible to automate pipelines through Google Cloud.
+> Google Bucket is used for storing both the raw and processed data together with the trained model also being saved to the bucket.
 > In the same way that git is used to work locally on code as an example, then DVC is the same for data, therefore when DVC is configured to point to the bucket as storage, the data can be kept updated and ensures everyone uses the same data.
-> The DVC workflow follows the same as git, in that first data is local, but with the commands ‘dvc add’ and ‘dvc push’ data is pushed to the specified storage unit. To get the data locally , the command ‘dvc pull’ can be used, and the same goes for the trained mode. 
+> The DVC workflow follows the same as git, in that first data is local, but with the commands ‘dvc add’ and ‘dvc push’ data is pushed to the specified storage unit. To get the data locally , the command ‘dvc pull’ can be used, and the same goes for the trained mode.
 >
-> In this project, the way the Bucket is used is two fold - in that it can be used locally but also in the cloud. 
+> In this project, the way the Bucket is used is two fold - in that it can be used locally but also in the cloud.
 > Locally the Buckets ensures that the user pulls the correct data to use for the project. While for the Cloud it’s part of the pipeline, in that the stored data in the Bucket is used for training the model inside a docker in the cloud. And also storing the trained model, so it can be used either locally or through API. 
 
 
@@ -495,13 +495,13 @@ When the images are built, they are located in GCP ‘Artifact Registry’, wher
 >
 > Answer:
 >
-> The Compute engine is used in combination with the Vertex AI, to train the model on a VM in the cloud and give the news model as output to the bucket. 
-> The configuration is done in the config file ‘config_vertex_ai.yaml’, here the VM is specified to use n1-standard-8 which can be found here: https://cloud.google.com/compute/docs/general-purpose-machines#c3-highcpu_1, the specific model is this case is a machine with 8 vCPUs and 30GB memory.
-> To monitor the performance of the training, the VM need access to where the weights and bias is located, which in this case is at WANDB.
-> The machine takes the newly created docker image to spin up a container for the run. 
-The training is then done here and the output is a trained model, that can be used later for prediction through a local FASTAPI.
+> The Compute engine is used in combination with the Vertex AI, to train the model on a VM that runs the newly created docker image in the cloud and outputs a trained model to the Bucket. 
+> The configuration is done in the file ‘config_vertex_ai.yaml’, here the VM is specified to use n1-standard-8, which is a machine with 8 vCPUs and 30GB memory, more information can be found here: https://cloud.google.com/compute/docs/general-purpose-machines#c3-highcpu_1
+> To monitor the performance of the training, the VM needs access to where the weights and bias is located, which in this case is located at WANDB.
+> To spin up a container, the machine uses the newly created docker image in the cloud to spin up a container for the run. 
+When this is done, it’s possible to start the VM to train the model. The training is then done here and the output is a trained model that can be used later for prediction through a local FASTAPI.
 >
-> Command to run the Vertex AI:
+> To use this feature, the following command can be used:
 gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --config=config_vertex_ai.yaml
 
 ### Question 19
@@ -512,9 +512,9 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
-
-
---- question 19 fill here ---
+> [GCP bucket](figures/bucket.png)
+>
+> [GCP bucket](figures/bucket_data.png)
 
 
 ### Question 20
@@ -525,9 +525,7 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
-
-
---- question 20 fill here ---
+> [GCP registry](figures/registry.png)
 
 
 ### Question 21
@@ -538,9 +536,7 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
-
-
---- question 21 fill here ---
+> [GCP bucket](figures/build.png)
 
 
 ### Question 22
@@ -558,7 +554,7 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
-> For local deployment we utilized FastAPI, which accepts POST requests. For accessing this service, one can call `curl -X POST -F data=@/path/to/image`, or navigate to the /docs page on the local host. Here an image can be uploaded by the client, and then the server uses the latest trained model from the Cloud to predict the class of the uploaded image. For cloud deployment, we began setting up an API through Cloud Functions, however due to limited time we were unsuccessful in fully implementing it. 
+> We used FastAPI to create an application, which accepts POST requests. For accessing this service, one can call `curl -X POST -F data=@/path/to/image`, or navigate to the /docs page on the local host. Here an image can be uploaded by the client, and then the server uses the latest trained model from the Cloud to predict the class of the uploaded image. For cloud deployment, we began setting up an API through Cloud Functions, however due to limited time we were unsuccessful in fully implementing it. 
 
 
 
@@ -618,9 +614,20 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
+> [overview](figures/overview.png)
+>
+> Starting from the local setup, we use a suite of tools for code development and experimentation. This includes Weights & Biases (W&B) and Hydra, which are used for experiment tracking and configuration management respectively.
+>
+> Upon completion of local development and testing, the code is committed and pushed to a GitHub repository. This action triggers a series of automated workflows via GitHub Actions, which are configured to run a variety of tests. These tests include general code tests and coverage checks. Successful completion of these tests ensures the code maintains a quality standard before it proceeds in the pipeline.
+>
+> Simultaneously, the push to GitHub also triggers a build in Google Cloud Platform (GCP), presumably using Google Cloud Build, which compiles the code into a deployable artifact. This artifact is then pushed to Google Artifact Registry, where the latest image build is stored.
+>
+> FastAPI is used as the deployment target for the ML models. However, the "Deploy best model" process is marked as not implemented, meaning that the automated deployment of the trained and vetted model to a production environment is a planned future enhancement.
+>
+> Finally, the user interacts with the system by querying a server to use the ML model's capabilities. The server would pull the newest image of the containerized application from the artifact registry. In parallel, users can clone the source code from the GitHub repository to review, use, or contribute to the project. 
+>
+> Overall, this pipeline embodies a continuous integration  (CI) approach tailored for ML, ensuring that code changes are automatically tested and built, maintaining the reliability and efficiency of ML model development and deployment
 
-
---- question 25 fill here ---
 
 
 ### Question 26
@@ -636,13 +643,18 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
+> The most significant challenges in the project revolved around effectively utilizing GitHub for collaborative code development and version control, managing data versioning with DVC (Data Version Control), maintaining the secrecy of API keys within the CI pipeline, and streamlining the Docker container build process within the GitHub Actions workflow as well as Docker building on cloud. Additionally, debugging each step added complexity to the project's development lifecycle.
+>
+> Starting with GitHub, we faced the common issues of coordinating work across multiple contributors. Ensuring that changes were accurately tracked and merged without conflicts required a disciplined approach to branch management and code reviews. To overcome this, we used branches and forks and integrated GitHub Pull Requests into our workflow, enabling thorough code reviews and automated checks before merging.
+>
+> The integration of DVC for syncing data and models in our pipeline had  its own set of challenges. We started with having our raw dataset on Google Drive where we had problems with dvc pull due to the large amount of files in the dataset. Later we moved the data to Google Cloud Bucket where we could dvc pull raw data successfully. 
+During the implementation of the CI pipeline, we struggled with managing secrets to access the necessary parts of our pipeline. We utilized GitHub Secrets and encrypted environment variables to store sensitive information, ensuring that API keys were not exposed in our codebase.
+>
+> The Docker container build process was automated within the GitHub Actions pipeline, but it presented difficulties. Each iteration of the Docker build required meticulous debugging to resolve issues related to dependencies, environment configurations, and compatibility with various services. 
+Debugging every step of the development pipeline, from coding to deployment, required a systematic approach. We relied heavily on logging, monitoring, and local testing environments that mirrored our production setup. This proactive strategy helped in preemptively identifying potential failures and addressing them before they could affect the production environment. 
+>
+> Finally, we had problems with deploying on the cloud, where we had issues with running cloud functions, etc.
 
-
-	!!FILL!! - challenges: 
- 	github for cooperation?
-	dvc sync and secret api for pipeline?
-	docker container built in github pipeline?
-	Debugging for every single step on the road…
 	
 
 
@@ -662,14 +674,14 @@ gcloud ai custom-jobs create --region=europe-west1 --display-name=test-run --con
 >
 > Answer:
 >
-> s193396 - data loading, hydra experiment configuration, building and pushing Docker images to GCP, FastAPI implementation using trained model, Cloud deployment 
+> - **s193396:** Specialized in data loading, hydra experiment configuration, and the Dockerization process. Additionally, played a key role in deploying the FastAPI application using the trained model on the Google Cloud Platform (GCP).
 >
-> s204165 - implementing deep learning model, continuous container, building and pushing Docker images to Docker Hub and GCP, Cloud setup and deployment
+> - **s204165:** Focused on implementing the deep learning model and continuous container integration. Took charge of building and pushing Docker images to both Docker Hub and GCP. Contributed significantly to the overall Cloud setup and deployment.
 >
-> s103629 -
+> - **s103629:** Led the setup of DVC to GCP Bucket, established a robust GIT Workflow, and configured Docker and dockerfiles for both local and cloud use. Created essential configuration files for DockerHub and GCP, while also setting up triggers for GCP Docker image building.
 >
-> s240485 - data transformation using Albumentation and data loading pipeline, TIMM, pytorch-lightning, click integration, W&B logging, fastapi model service with docker container, hydra experiment multi-configuration
+> - **s240485:** Worked on data transformation utilizing Albumentation, built a sophisticated data loading pipeline, and integrated TIMM, pytorch-lightning, and click functionalities. Managed the integration of W&B logging and developed a FastAPI model service within a Docker container. Additionally, handled the hydra experiment with multi-configuration.
 >
-> s204127 - scaling of data creation to DVC, unit-testing, continuous integration of tests of GC data and model pulling, model, data and training test, Vertex AI training and test of Vertex AI prediction test in CI, wandb integration.
+> - **s204127:** Focused on scaling data creation to DVC, conducted unit-testing, and played a pivotal role in the continuous integration of tests for GCP data and model pulling. Extensively worked on model, data, and training tests, including Vertex AI training and tests for Vertex AI predictions within the continuous integration setup. Contributed to W&B integration as well.
 >
-> All members contributed to code by fixing bugs and code mistakes, reviewing pull requests and solving merge conflicts.
+> Overall, each team member actively participated in code improvement by addressing bugs, rectifying code mistakes, reviewing pull requests, and resolving merge conflicts. Furthermore, all team members collaborated on the creation of the model and its training.
