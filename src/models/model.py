@@ -22,11 +22,13 @@ class EfficientNetV2Model(pl.LightningModule):
         # modify the last layer to fit the number of classes
         self.base_model.classifier = nn.Linear(num_features, num_classes)
 
-    def forward(self, x: torch.Tensor)-> torch.Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         if x.ndim != 4:
             raise ValueError(f'Expected input to a 4D tensor but got {x.ndim}D tensor instead.')
 
-        return self.base_model(x)
+        logits = self.base_model(x)
+        probabilities = torch.nn.functional.softmax(logits, dim=1)
+        return probabilities
     
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
@@ -58,8 +60,9 @@ class EfficientNetV2Model(pl.LightningModule):
     
     def predict_step(self, batch, batch_idx, dataloader_idx=None):
         x, _ = batch
-        y_hat = self(x)
-        return y_hat       
+        logits = self(x)
+        probabilities = torch.nn.functional.softmax(logits, dim=1)
+        return probabilities       
 
 if __name__ == '__main__':
 
